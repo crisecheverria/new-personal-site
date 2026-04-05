@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>yourname — init.lua</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="editor">
+
+  <div id="tabline">
+    <div class="tab active" data-buf="about">about.lua <span class="modified">●</span></div>
+    <div class="tab" data-buf="projects">projects.lua</div>
+    <div class="tab" data-buf="contact">contact.lua</div>
+  </div>
+
+  <div id="main">
+    <div id="gutter"></div>
+    <div id="buffer"></div>
+  </div>
+
+  <div id="statusline">
+    <div class="sl-segment sl-mode" id="sl-mode">NORMAL</div>
+    <div class="sl-segment">
+      <span class="sl-file" id="sl-file">about.lua</span>
+      <span class="sl-branch"> main</span>
+    </div>
+    <div class="sl-right">
+      <div class="sl-segment">
+        <span class="sl-ft">lua</span>
+      </div>
+      <div class="sl-segment sl-pos" id="sl-pos">1:1</div>
+    </div>
+  </div>
+
+  <div id="cmdline">
+    <span id="cmdline-text"></span><span id="cmdline-cursor" style="display:none"></span>
+  </div>
+</div>
+
+<div id="picker">
+  <div class="picker-box">
+    <div class="picker-header">Telescope — Find Files</div>
+    <div class="picker-search">
+      <span class="picker-prompt">❯</span>
+      <input id="picker-input" type="text" autocomplete="off" spellcheck="false" placeholder="" />
+    </div>
+    <div class="picker-results" id="picker-results"></div>
+    <div class="picker-footer">
+      <span><span class="key">↵</span> open</span>
+      <span><span class="key">↑↓</span> navigate</span>
+      <span><span class="key">Esc</span> close</span>
+    </div>
+  </div>
+</div>
+
+<div id="whichkey">
+  <div class="wk-item"><span class="wk-key">f</span><span class="wk-desc">find files</span></div>
+  <div class="wk-item"><span class="wk-key">1</span><span class="wk-desc">about.lua</span></div>
+  <div class="wk-item"><span class="wk-key">2</span><span class="wk-desc">projects.lua</span></div>
+  <div class="wk-item"><span class="wk-key">3</span><span class="wk-desc">contact.lua</span></div>
+  <div class="wk-item"><span class="wk-key">?</span><span class="wk-desc">help</span></div>
+</div>
+
+<script src="main.js"></script>
+</body>
+</html>
