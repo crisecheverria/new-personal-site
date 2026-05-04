@@ -5,8 +5,20 @@ const ME = {
   title: "software developer",
   location: "Göteborg, Sweden",
   about:
-    "Fullstack develeoper, recently focused mainly in frontend. I live in the terminal.\nNeovim, tmux, lazygit — the whole stack.",
-  stack: ["TypeScript", "React", "Go", "GraphQL", "REST", "Node", "Database"],
+    "Fullstack developer, recently focused mainly in frontend. Experience writing fullstack apps with TypeScript and SQL databases, including unit/integration/end-to-end tests. I live in the terminal.\nNeovim, tmux, lazygit — the whole stack. I have experience using AI for daily work. I mainly use Claude code. And also have experience setup local models. I have integrated AI with my development environment and have experience writing AI agents using official SDK's and tools like Mastra for typescript. I started my AI journey with Copilot, Claude code web and then agentic claude code cli. I like to use AI in a way that makes sense to me and that increase my productivity but also dont reduce my IQ.",
+  stack: [
+    "TypeScript",
+    "React",
+    "NextJs",
+    "Go",
+    "GraphQL",
+    "REST",
+    "Node",
+    "Database",
+    "React Testing Library",
+    "Redux",
+    "Cypress/Playwright",
+  ],
   learning: ["c/c++", "lua", "Go", "Rust"],
   workflow: ["Neovim", "tmux", "Ghostty", "lazygit"],
   email: "cristian.echeverri4@gmail.com",
@@ -18,8 +30,14 @@ const PROJECTS = [
   {
     name: "Quest",
     type: "web",
-    url: "https://quest.cristianecheverria.com/",
+    url: "https://github.com/crisecheverria/codequest-platform",
     desc: "Code challenges platform",
+  },
+  {
+    name: "Svenska",
+    type: "TUI",
+    url: "https://github.com/crisecheverria/svenska",
+    desc: "Terminal app for practicing Swedish",
   },
   {
     name: "github_profile",
