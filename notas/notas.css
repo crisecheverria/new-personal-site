@@ -90,7 +90,7 @@ h1 { font-size: 56px; line-height: 1.1; margin: 20px 0 12px; letter-spacing: -1p
 .notice { margin-top: 10px; color: var(--orange); font-size: 13px; }
 
 .shot { margin: 40px auto 0; max-width: 900px; }
-.shot img { width: 100%; border-radius: 12px; border: 1px solid var(--bg2); box-shadow: 0 20px 60px rgba(0, 0, 0, 0.55); }
+.shot img { display: block; width: 100%; height: auto; border-radius: 12px; border: 1px solid var(--bg2); box-shadow: 0 20px 60px rgba(0, 0, 0, 0.55); }
 
 section { padding: 36px 0; }
 h2 { font-size: 22px; margin-bottom: 20px; }

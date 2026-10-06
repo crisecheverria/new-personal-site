@@ -8,8 +8,8 @@
   const notice = document.getElementById("notice");
   const gatekeeper = document.getElementById("gatekeeper");
 
-  // Drop a screenshot.png next to this page and it appears in the hero.
-  fetch("screenshot.png", { method: "HEAD" })
+  // Shows screenshot.webp in the hero when the file exists.
+  fetch("screenshot.webp", { method: "HEAD" })
     .then((r) => { if (r.ok) document.getElementById("shot").hidden = false; })
     .catch(() => {});
 
