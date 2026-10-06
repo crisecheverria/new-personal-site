@@ -28,6 +28,12 @@ const ME = {
 
 const PROJECTS = [
   {
+    name: "Notas",
+    type: "macOS",
+    url: "https://cristianecheverria.com/notas",
+    desc: "Markdown notes app (Rust + GPUI) with an MCP server",
+  },
+  {
     name: "Quest",
     type: "web",
     url: "https://github.com/crisecheverria/codequest-platform",

@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Notas — Markdown notes for macOS, built for you and your AI agents</title>
+  <meta name="description" content="Notas is a fast, native Markdown notes app for macOS built with Rust. Plain .md files, live preview, fuzzy finder, Vim mode and a built-in MCP server so AI agents can read and edit your notes." />
+  <meta property="og:title" content="Notas — Markdown notes for macOS" />
+  <meta property="og:description" content="A fast, native Markdown notes app with a built-in MCP server. Plain .md files you own." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://cristianecheverria.com/notas/" />
+  <meta property="og:image" content="https://cristianecheverria.com/notas/icon.png" />
+  <meta name="theme-color" content="#1d2021" />
+  <link rel="icon" type="image/png" href="icon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="notas.css" />
+</head>
+<body>
+  <header class="nav">
+    <a class="nav-home" href="/">~/cristianecheverria.com</a>
+    <nav>
+      <a href="#features">features</a>
+      <a href="#agents">agents</a>
+      <a href="#install">install</a>
+      <a href="https://github.com/crisecheverria/notas-releases/releases" target="_blank" rel="noopener">releases</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <img class="hero-icon" src="icon.png" width="96" height="96" alt="Notas app icon" />
+      <h1>Notas</h1>
+      <p class="tagline">
+        A fast, native Markdown notes app for macOS.<br />
+        Your notes stay plain <code>.md</code> files, and your AI agents can read and edit them over MCP.
+      </p>
+
+      <div class="cta">
+        <a id="download" class="btn primary" href="https://github.com/crisecheverria/notas-releases/releases/latest/download/Notas.dmg">
+          <span class="btn-icon">↓</span> Download for macOS
+        </a>
+        <a class="btn" href="https://github.com/crisecheverria/notas-releases/releases" target="_blank" rel="noopener">All releases</a>
+      </div>
+      <p class="meta" id="meta">macOS 13+ · Apple Silicon &amp; Intel</p>
+      <p class="notice" id="notice" hidden></p>
+
+      <figure class="shot" id="shot" hidden>
+        <img src="screenshot.png" alt="Notas showing the sidebar, note list and editor with live preview" />
+      </figure>
+    </section>
+
+    <section id="features">
+      <h2><span class="c">--</span> features</h2>
+      <div class="grid">
+        <article class="card">
+          <h3>Plain files, no lock-in</h3>
+          <p>Every note is a Markdown file with YAML frontmatter in a folder you own. Notebooks are folders. Open them in any editor, keep them in git.</p>
+        </article>
+        <article class="card">
+          <h3>Native and fast</h3>
+          <p>Written in Rust on GPUI, the GPU-accelerated UI framework behind the Zed editor. No Electron, no web view.</p>
+        </article>
+        <article class="card">
+          <h3>Edit, split, preview</h3>
+          <p>Live Markdown preview with autosave, tables, task lists, alerts and syntax highlighting for about 35 languages. Paste or drop images straight into a note.</p>
+        </article>
+        <article class="card">
+          <h3>Fuzzy finder</h3>
+          <p><kbd>⌘P</kbd> opens an fzf-style palette: find notes, run commands, jump to notebooks, tags or headings, or search note contents with <code>/</code>.</p>
+        </article>
+        <article class="card">
+          <h3>Vim mode</h3>
+          <p>Optional Vim keybindings in the editor, with motions, operators, text objects and visual mode. Off by default, toggle with <kbd>⌘⇧V</kbd>.</p>
+        </article>
+        <article class="card">
+          <h3>Focus mode</h3>
+          <p>Hide the sidebar and note list with <kbd>⌘⇧D</kbd> and write full width. Wiki links, backlinks, tags and pinned notes keep everything connected.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="files">
+      <h2><span class="c">--</span> your notes are just files</h2>
+      <div class="two">
+        <pre class="code"><span class="c">~/Notas/</span>
+├── Inbox/
+│   └── meeting-notes.md
+├── Work/Ideas/
+│   └── mcp-server.md
+├── .attachments/   <span class="c"># pasted images</span>
+└── .trash/         <span class="c"># deleted notes</span></pre>
+        <pre class="code"><span class="c">---</span>
+<span class="k">title</span>: Rust GPUI ideas
+<span class="k">tags</span>:
+- rust
+- gpui
+<span class="k">status</span>: active
+<span class="k">pinned</span>: false
+<span class="c">---</span>
+
+# Ideas
+- fuzzy finder
+- <span class="s">[[Vim mode]]</span></pre>
+      </div>
+    </section>
+
+    <section id="agents">
+      <h2><span class="c">--</span> built for AI agents</h2>
+      <p class="lead">
+        Notas ships with <code>notas-mcp</code>, a <a href="https://modelcontextprotocol.io" target="_blank" rel="noopener">Model Context Protocol</a> server inside the app.
+        Point Claude Code, Claude Desktop or any MCP client at it and agents can search, read, create and patch your notes. Changes show up in the app live.
+      </p>
+      <pre class="code"><span class="c"># Claude Code</span>
+claude mcp add notas -- /Applications/Notas.app/Contents/MacOS/notas-mcp --vault ~/Notas</pre>
+      <p class="tools">
+        <code>list-notebooks</code> <code>create-notebook</code> <code>rename-notebook</code> <code>delete-notebook</code>
+        <code>list-notes</code> <code>read-note</code> <code>create-note</code> <code>update-note</code> <code>patch-note</code>
+        <code>append-to-note</code> <code>delete-note</code> <code>search-notes</code> <code>list-tags</code> <code>tag-note</code> <code>read-backlinks</code>
+      </p>
+      <p class="small">The app also has a panel (<kbd>⌘,</kbd>) with copy-ready config for other clients. The server runs over stdio, so there is no port or password to manage.</p>
+    </section>
+
+    <section id="install">
+      <h2><span class="c">--</span> install</h2>
+      <ol class="steps">
+        <li><strong>Download</strong> <code>Notas.dmg</code> from the button above.</li>
+        <li><strong>Open it</strong> and drag <em>Notas</em> into <em>Applications</em>.</li>
+        <li><strong>Launch</strong> Notas from Spotlight or Raycast. Notes live in <code>~/Notas</code>.</li>
+      </ol>
+      <div class="gatekeeper" id="gatekeeper" hidden>
+        <h3>First launch on this build</h3>
+        <p>This release is not notarized by Apple yet, so macOS asks for confirmation the first time. Right-click the app, choose <strong>Open</strong>, then <strong>Open</strong> again. Or run:</p>
+        <pre class="code">xattr -dr com.apple.quarantine /Applications/Notas.app</pre>
+      </div>
+      <p class="small">Requires macOS 13 or later. Universal build for Apple Silicon and Intel.</p>
+    </section>
+
+    <section id="faq">
+      <h2><span class="c">--</span> faq</h2>
+      <dl class="faq">
+        <dt>Does it sync?</dt>
+        <dd>Not built in. Because notes are plain files you can keep <code>~/Notas</code> in git or any folder-sync tool.</dd>
+        <dt>Where is my data?</dt>
+        <dd>Only on your Mac, in <code>~/Notas</code>. To use another folder, launch Notas from a terminal with <code>NOTAS_DIR</code> set. Deleted notes go to <code>.trash</code> inside the vault.</dd>
+        <dt>Coming from Inkdrop?</dt>
+        <dd>The tool names and the notebook, tag and wiki-link model will feel familiar, and your notes are already Markdown.</dd>
+        <dt>Something broken?</dt>
+        <dd>Open an issue on <a href="https://github.com/crisecheverria/notas-releases/issues" target="_blank" rel="noopener">GitHub</a>.</dd>
+      </dl>
+    </section>
+  </main>
+
+  <footer>
+    <span>Built by <a href="/">Cristian Echeverria</a> with Rust and GPUI.</span>
+    <span><a href="https://github.com/crisecheverria" target="_blank" rel="noopener">GitHub</a> · <a href="/">← back to home</a></span>
+  </footer>
+
+  <script src="notas.js"></script>
+</body>
+</html>
