@@ -29,7 +29,7 @@
       button.classList.remove("disabled");
       button.lastChild.textContent = " Download for macOS";
       notice.hidden = true;
-      meta.textContent = `Version ${version} · ${mb} MB · ${date} · macOS 13+ · Apple Silicon & Intel`;
+      meta.textContent = `Version ${version} · ${mb} MB · ${date} · macOS 13+ · Apple Silicon`;
       // Builds that are not notarized say so in their release notes.
       if (/not notarized/i.test(release.body || "")) gatekeeper.hidden = false;
     })
