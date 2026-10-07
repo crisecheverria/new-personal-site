@@ -14,12 +14,13 @@
   <link rel="icon" type="image/png" href="icon.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="notas.css?v=2" />
+  <link rel="stylesheet" href="notas.css?v=3" />
 </head>
 <body>
   <header class="nav">
     <a class="nav-home" href="/">~/cristianecheverria.com</a>
     <nav>
+      <a href="#why">why</a>
       <a href="#features">features</a>
       <a href="#agents">agents</a>
       <a href="#install">install</a>
@@ -48,6 +49,51 @@
       <figure class="shot" id="shot" hidden>
         <img src="screenshot.webp?v=2" width="2000" height="1144" alt="Notas in dark mode: notebooks and tags in the sidebar, a note list, and a Markdown note open in split view with the source on the left and the rendered preview on the right" />
       </figure>
+    </section>
+
+    <section id="why">
+      <h2><span class="c">--</span> why notes matter more with AI</h2>
+      <p class="lead">
+        Writing things down in your own words has always been how learning sticks. AI makes answers instant, but it doesn't make them yours:
+        explanations scroll past, agent sessions end, and context windows forget. A notes app is where the learning stays.
+      </p>
+      <div class="grid">
+        <article class="card">
+          <h3>Answers are cheap, understanding isn't</h3>
+          <p>An agent can explain anything in seconds. You remember what you rewrote, connected to what you already knew, and came back to later.</p>
+        </article>
+        <article class="card">
+          <h3>Agents forget, your vault doesn't</h3>
+          <p>Keep the plan, the findings and the dead ends in a note, and the next session, yours or an agent's, starts where the last one stopped.</p>
+        </article>
+        <article class="card">
+          <h3>Track progress, not just results</h3>
+          <p>Learning a topic or chasing a bug takes days. A running log of what you tried and what comes next shows how far you've come and stops you repeating work.</p>
+        </article>
+      </div>
+
+      <h3 class="loop-title">A simple loop</h3>
+      <ol class="steps">
+        <li><strong>Capture.</strong> <kbd>⌘N</kbd> and write the question in your own words before you ask anyone, human or AI.</li>
+        <li><strong>Investigate.</strong> Work with your agent, and have it append findings, sources and next steps to the same note over MCP.</li>
+        <li><strong>Distill.</strong> Rewrite the key points yourself, tag the note, and link related ideas with <code>[[wiki links]]</code>.</li>
+        <li><strong>Return.</strong> <kbd>⌘P</kbd> finds it again by title, tag, heading or full text, weeks later.</li>
+      </ol>
+
+      <figure class="media" data-media hidden>
+        <video data-check="demo.mp4" data-poster="demo-poster.webp" autoplay muted loop playsinline preload="metadata" aria-label="Recording of Notas: capturing a question, an agent appending findings over MCP, and finding the note again with the fuzzy finder"></video>
+      </figure>
+
+      <div class="shots" data-media hidden>
+        <figure class="media">
+          <img data-check="finder-notes.webp" loading="lazy" alt="The Notas fuzzy finder listing notes that match a short query" />
+          <figcaption><kbd>⌘P</kbd> fuzzy-find notes by title</figcaption>
+        </figure>
+        <figure class="media">
+          <img data-check="finder-search.webp" loading="lazy" alt="The Notas fuzzy finder searching inside note contents with a slash query" />
+          <figcaption>Type <code>/</code> to search inside every note</figcaption>
+        </figure>
+      </div>
     </section>
 
     <section id="features">
@@ -154,6 +200,6 @@ claude mcp add notas -- /Applications/Notas.app/Contents/MacOS/notas-mcp --vault
     <span><a href="https://github.com/crisecheverria" target="_blank" rel="noopener">GitHub</a> · <a href="/">← back to home</a></span>
   </footer>
 
-  <script src="notas.js?v=3"></script>
+  <script src="notas.js?v=4"></script>
 </body>
 </html>
