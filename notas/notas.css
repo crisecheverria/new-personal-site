@@ -96,6 +96,8 @@ h1 { font-size: 56px; line-height: 1.1; margin: 20px 0 12px; letter-spacing: -1p
 .shots { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 18px; margin-top: 8px; }
 .shots .media { margin-top: 16px; }
 .loop-title { margin-top: 28px; margin-bottom: 10px; }
+.read-format { margin-top: 18px; align-items: start; }
+.read-format h3 { margin-top: 4px; }
 .shot img { display: block; width: 100%; height: auto; border-radius: 12px; border: 1px solid var(--bg2); box-shadow: 0 20px 60px rgba(0, 0, 0, 0.55); }
 
 section { padding: 36px 0; }

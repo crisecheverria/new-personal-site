@@ -14,13 +14,14 @@
   <link rel="icon" type="image/png" href="icon.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="notas.css?v=3" />
+  <link rel="stylesheet" href="notas.css?v=4" />
 </head>
 <body>
   <header class="nav">
     <a class="nav-home" href="/">~/cristianecheverria.com</a>
     <nav>
       <a href="#why">why</a>
+      <a href="#read">read</a>
       <a href="#features">features</a>
       <a href="#agents">agents</a>
       <a href="#install">install</a>
@@ -34,7 +35,8 @@
       <h1>Notas</h1>
       <p class="tagline">
         A fast, native Markdown notes app for macOS.<br />
-        Your notes stay plain <code>.md</code> files, and your AI agents can read and edit them over MCP.
+        Your notes stay plain <code>.md</code> files, and your AI agents can read and edit them over MCP.<br />
+        Import articles, highlight what matters, and ask Claude about any passage.
       </p>
 
       <div class="cta">
@@ -75,7 +77,7 @@
       <h3 class="loop-title">A simple loop</h3>
       <ol class="steps">
         <li><strong>Capture.</strong> <kbd>⌘N</kbd> and write the question in your own words before you ask anyone, human or AI.</li>
-        <li><strong>Investigate.</strong> Work with your agent, and have it append findings, sources and next steps to the same note over MCP.</li>
+        <li><strong>Investigate.</strong> Highlight what matters and ask Claude about any passage right in Notas, or have your agent append findings, sources and next steps to the same note over MCP.</li>
         <li><strong>Distill.</strong> Rewrite the key points yourself, tag the note, and link related ideas with <code>[[wiki links]]</code>.</li>
         <li><strong>Return.</strong> <kbd>⌘P</kbd> finds it again by title, tag, heading or full text, weeks later.</li>
       </ol>
@@ -94,6 +96,57 @@
           <figcaption>Type <code>/</code> to search inside every note</figcaption>
         </figure>
       </div>
+    </section>
+
+    <section id="read">
+      <h2><span class="c">--</span> read with Claude</h2>
+      <p class="lead">
+        Paste a link and Notas saves a clean, readable copy of the article as a note. Select any passage to highlight it or ask Claude about it,
+        and the answer lands in a Notebook panel beside the text. Everything is saved in the note itself, so it is still just Markdown.
+      </p>
+      <div class="grid">
+        <article class="card">
+          <h3>Import any article</h3>
+          <p><kbd>⌘⇧I</kbd>, or paste a link into an empty note. Notas keeps the readable part of the page, the way Reader View does, and adds the source, author and reading time.</p>
+        </article>
+        <article class="card">
+          <h3>Highlight and ask</h3>
+          <p>Select text to highlight it in four colours, or <strong>Ask</strong>, <strong>Explain</strong> or <strong>Define</strong> it. Answers appear as cards in the Notebook panel; click one to jump back to its passage.</p>
+        </article>
+        <article class="card">
+          <h3>Summaries</h3>
+          <p><strong>Summarize</strong> at the top of an article gives a short take on what it argues and its key claims, before you commit to a long read.</p>
+        </article>
+        <article class="card">
+          <h3>Read your way</h3>
+          <p>Paper and Sepia themes, serif, sans or mono, a size slider, and narrow to wide columns. Your settings stick between notes.</p>
+        </article>
+      </div>
+
+      <div class="two read-format">
+        <pre class="code"><span class="c">## Annotations</span>
+
+<span class="k">&gt; [!highlight]</span> yellow
+&gt; &gt; Bun's CLI gets over 22
+&gt; &gt; million monthly downloads.
+
+<span class="k">&gt; [!explain]</span>
+&gt; &gt; use-after-free in send()
+&gt;
+&gt; A memory-safety bug: a callback
+&gt; runs while its buffer is freed…</pre>
+        <div>
+          <h3>Plain Markdown, all the way down</h3>
+          <p class="small">Highlights, questions and answers are callouts in an <code>## Annotations</code> section at the end of the note. Other editors show them, git diffs them, and agents read them over MCP.</p>
+          <h3 class="loop-title">Uses your Claude Code login</h3>
+          <p class="small">Claude features run through the Claude Code CLI on Haiku, which is quick and inexpensive for short answers. There is no API key to paste into Notas. Without Claude Code, everything else works as usual.</p>
+        </div>
+      </div>
+
+      <figure class="media" data-media hidden>
+        <video data-check="reader.mp4?v=1" data-poster="reader-poster.webp?v=1" autoplay muted loop playsinline preload="metadata" aria-label="Recording of Notas: importing an article from a link, summarizing it, highlighting a passage and asking Claude to explain another, with answers appearing in the Notebook panel"></video>
+        <figcaption>Import an article, then highlight and ask Claude as you read</figcaption>
+      </figure>
     </section>
 
     <section id="features">
@@ -122,6 +175,14 @@
         <article class="card">
           <h3>Focus mode</h3>
           <p>Hide the sidebar and note list with <kbd>⌘⇧D</kbd> and write full width. Wiki links, backlinks, tags and pinned notes keep everything connected.</p>
+        </article>
+        <article class="card">
+          <h3>Made for macOS 26</h3>
+          <p>A Liquid Glass sidebar, and panels and popups that move on springs: quick, interruptible, and still when Reduce Motion is on.</p>
+        </article>
+        <article class="card">
+          <h3>Updates itself</h3>
+          <p><strong>Check for Updates…</strong> downloads the new version, verifies its signature and notarization, and restarts into it. A quiet daily check tells you when one is out.</p>
         </article>
       </div>
     </section>
@@ -189,6 +250,8 @@ claude mcp add notas -- /Applications/Notas.app/Contents/MacOS/notas-mcp --vault
         <dd>Not built in. Because notes are plain files you can keep <code>~/Notas</code> in git or any folder-sync tool.</dd>
         <dt>Where is my data?</dt>
         <dd>Only on your Mac, in <code>~/Notas</code>. To use another folder, launch Notas from a terminal with <code>NOTAS_DIR</code> set. Deleted notes go to <code>.trash</code> inside the vault.</dd>
+        <dt>Do I need an API key for the Claude features?</dt>
+        <dd>No. Notas asks Claude through <a href="https://claude.com/claude-code" target="_blank" rel="noopener">Claude Code</a>, using the account you are already signed in with. Install Claude Code and sign in once; Notas finds it on its own.</dd>
         <dt>Something broken?</dt>
         <dd>Open an issue on <a href="https://github.com/crisecheverria/notas-releases/issues" target="_blank" rel="noopener">GitHub</a>.</dd>
       </dl>
