@@ -28,6 +28,12 @@ const ME = {
 
 const PROJECTS = [
   {
+    name: "Titan",
+    type: "macOS",
+    url: "https://cristianecheverria.com/titan",
+    desc: "AI-native terminal (Swift + libghostty) for Claude Code",
+  },
+  {
     name: "Notas",
     type: "macOS",
     url: "https://cristianecheverria.com/notas",

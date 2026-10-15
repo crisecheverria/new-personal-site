@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Titan — an AI-native terminal for macOS</title>
+  <meta name="description" content="Titan is a native macOS terminal built on libghostty. Shells on a real terminal and Claude Code sessions as a readable feed, side by side in tabs and splits, and still running when you quit." />
+  <meta property="og:title" content="Titan — an AI-native terminal for macOS" />
+  <meta property="og:description" content="Shells and Claude Code sessions side by side, built on libghostty. Know which session needs you." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://cristianecheverria.com/titan/" />
+  <meta property="og:image" content="https://cristianecheverria.com/titan/icon.png" />
+  <meta name="theme-color" content="#1d2021" />
+  <link rel="icon" type="image/png" href="icon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="titan.css?v=3" />
+</head>
+<body>
+  <header class="nav">
+    <a class="nav-home" href="/">~/cristianecheverria.com</a>
+    <nav>
+      <a href="#why">why</a>
+      <a href="#claude">claude</a>
+      <a href="#terminal">terminal</a>
+      <a href="#config">config</a>
+      <a href="#faq">faq</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <img class="hero-icon" src="icon.png" width="96" height="96" alt="Titan app icon: a spectrum infinity sign" />
+      <h1>Titan</h1>
+      <p class="tagline">
+        An AI-native terminal for macOS.<br />
+        Shells on a real terminal and Claude Code sessions as a readable feed, side by side in tabs and splits.<br />
+        Built on libghostty, the terminal core behind Ghostty.
+      </p>
+
+      <div class="cta">
+        <a class="btn primary" href="#why"><span class="btn-icon">↓</span> See what it does</a>
+      </div>
+      <p class="meta">A personal project · macOS 26+ · Apple Silicon</p>
+
+      <figure class="shot" id="shot" hidden>
+        <img src="screenshot.webp?v=1" width="2000" height="1250" alt="Titan with a Claude Code session as a feed beside a shell, tabs across the top" />
+      </figure>
+    </section>
+
+    <section id="why">
+      <h2><span class="c">--</span> why a terminal built around agents</h2>
+      <p class="lead">
+        Claude Code's TUI takes over a whole terminal: its own transcript, its own input box, its own spinners.
+        Run three of them and you're flipping through tabs to find the one that's waiting on you.
+        Titan runs Claude Code in its structured stream mode instead, so a session is a pane like any other, and Titan knows what each one is doing.
+      </p>
+      <div class="grid">
+        <article class="card">
+          <h3>A feed, not a screen scrape</h3>
+          <p>Replies, tool calls and their output arrive as messages. Titan sets replies as Markdown for reading, folds tool output until you open it, and never scrapes text off a screen.</p>
+        </article>
+        <article class="card">
+          <h3>Know which session needs you</h3>
+          <p>Tabs show whether their Claude sessions are working, done or waiting on you. <kbd>⌘J</kbd> jumps to the one that's waiting; hover a tab to see what each session is doing.</p>
+        </article>
+        <article class="card">
+          <h3>Sessions outlive the window</h3>
+          <p>Shells and Claude sessions run in <code>titan-ptyd</code>, a small daemon, so quitting or updating Titan doesn't stop them. Reopen it and they're where you left them.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="claude">
+      <h2><span class="c">--</span> the claude pane</h2>
+      <p class="lead">
+        <kbd>⌘N</kbd> starts a Claude Code session in a folder you pick. It's the same <code>claude</code> you already use, with your settings,
+        <code>CLAUDE.md</code>, skills and MCP servers, drawn as a conversation with an input box of its own.
+      </p>
+      <div class="grid">
+        <article class="card">
+          <h3>Send while it works</h3>
+          <p><kbd>↩</kbd> sends at once, and Claude takes the message in at the running turn's next step. <kbd>⌥↩</kbd> queues it for when the turn ends instead.</p>
+        </article>
+        <article class="card">
+          <h3>Run what it suggests</h3>
+          <p>Shell code blocks in a reply get <strong>Run</strong>, <strong>Run in a shell</strong> and <strong>Copy</strong>. Output streams in under the block. Nothing runs without the click.</p>
+        </article>
+        <article class="card">
+          <h3>See what changed</h3>
+          <p><code>/diff</code> and <code>/git</code> open a side pane with every file changed since the session started, plus git status, recent commits and stashes.</p>
+        </article>
+        <article class="card">
+          <h3>Pages, live in the feed</h3>
+          <p>HTML and SVG files Claude writes show up in the conversation as live pages, scripts and styles included, and move down as Claude revises them.</p>
+        </article>
+        <article class="card">
+          <h3>A browser it can drive</h3>
+          <p><kbd>⇧⌘B</kbd> opens a browser pane beside the conversation. Claude can load, read and click through a page, your dev server included, while you watch.</p>
+        </article>
+        <article class="card">
+          <h3>Every path is a link</h3>
+          <p>File paths and URLs in the feed are clickable. A file opens beside the pane at its line, in a built-in viewer or your <code>$EDITOR</code>.</p>
+        </article>
+        <article class="card">
+          <h3>A worktree each</h3>
+          <p><kbd>⇧⌘N</kbd> starts a session in a git worktree of its own, so two sessions can work on one repository without stepping on each other.</p>
+        </article>
+        <article class="card">
+          <h3>Model, effort, context</h3>
+          <p>A model picker, an effort slider and a ring for how full the context window is. Permission modes run from asking every time to YOLO.</p>
+        </article>
+        <article class="card">
+          <h3>@ and /</h3>
+          <p><code>@</code> fuzzy-finds files to mention. <code>/</code> lists the commands and skills installed for that session, with their descriptions.</p>
+        </article>
+        <article class="card">
+          <h3>Attach anything</h3>
+          <p>Paste or drop images and files into a conversation, or drop them on a tab: a Claude session attaches them, a shell types their paths.</p>
+        </article>
+      </div>
+
+      <div class="shots" data-media hidden>
+        <figure class="media">
+          <img data-check="feed.webp?v=1" loading="lazy" alt="A Claude session in Titan: a reply set as Markdown, tool steps folded into one line, and a permission card asking to run a command" />
+          <figcaption>Replies set for reading, steps folded, permissions inline</figcaption>
+        </figure>
+        <figure class="media">
+          <img data-check="diff.webp?v=1" loading="lazy" alt="Titan's side pane listing the files a Claude session changed, with their diffs" />
+          <figcaption><code>/diff</code>: everything the session changed</figcaption>
+        </figure>
+      </div>
+
+      <figure class="media" data-media hidden>
+        <video data-check="browser.mp4?v=1" data-poster="browser-poster.webp?v=1" autoplay muted loop playsinline preload="metadata" aria-label="Recording of Titan: Claude adds a dark mode toggle to a small timer page, then opens it in the browser pane beside the conversation and clicks the toggle"></video>
+        <figcaption>Claude makes a change, then checks it in the browser pane</figcaption>
+      </figure>
+    </section>
+
+    <section id="terminal">
+      <h2><span class="c">--</span> and a real terminal</h2>
+      <div class="grid">
+        <article class="card">
+          <h3>libghostty inside</h3>
+          <p>The same VT core as Ghostty, drawn with Metal. Improvements upstream arrive as a rebuild, not a rewrite.</p>
+        </article>
+        <article class="card">
+          <h3>Tabs and splits</h3>
+          <p><kbd>⌘D</kbd> and <kbd>⇧⌘D</kbd> split, <kbd>⇧⌘↩</kbd> expands a pane. Drag panes onto tabs, tabs out into windows, and <kbd>⌘E</kbd> shows every tab at once.</p>
+        </article>
+        <article class="card">
+          <h3>Command palette</h3>
+          <p><kbd>⌘P</kbd> reaches every command, resumes past Claude sessions, opens lazygit, and starts recipes: saved setups of shells and a browser that ask for what they need first.</p>
+        </article>
+        <article class="card">
+          <h3>Claude's TUI works too</h3>
+          <p>Prefer <code>claude</code> in a shell? Run it in a pane and it still gets Titan's notifications, keep-awake and browser.</p>
+        </article>
+        <article class="card">
+          <h3>More than one Claude account</h3>
+          <p>Map folders to Claude accounts and each session opens under the right one, its history kept apart. Continue a session under the other account in one click.</p>
+        </article>
+        <article class="card">
+          <h3>Your colours, everywhere</h3>
+          <p>A theme reaches the whole window, the Claude pane, and Neovim running inside it.</p>
+        </article>
+      </div>
+
+      <figure class="media" data-media hidden>
+        <img data-check="overview.webp?v=1" loading="lazy" alt="Titan's Show All Tabs view: every tab as a tile with its panes" />
+        <figcaption><kbd>⌘E</kbd> shows every tab and its panes</figcaption>
+      </figure>
+    </section>
+
+    <section id="config">
+      <h2><span class="c">--</span> one config file</h2>
+      <div class="two">
+        <pre class="code"><span class="c"># ~/.config/titan/config</span>
+<span class="k">font-family</span> = JetBrains Mono
+<span class="k">font-size</span> = 14
+<span class="k">tab-position</span> = left
+<span class="k">reading-width</span> = 95
+<span class="k">file-links</span> = editor
+<span class="k">keep-awake</span> = true
+
+<span class="c"># folders to Claude accounts</span>
+<span class="k">claude-account</span> = Personal, <span class="s">~/.claude</span>
+<span class="k">claude-account</span> = Client, <span class="s">~/.claude-client</span>, <span class="s">~/code/client</span></pre>
+        <div>
+          <h3>Ghostty's settings, then Titan's</h3>
+          <p class="small">Titan reads your Ghostty config first and its own on top, so fonts, themes and colours you've set up carry over. <kbd>⌘,</kbd> opens the file, and Titan reloads it when you save.</p>
+          <h3 class="loop-title">Uses your Claude Code login</h3>
+          <p class="small">Claude panes run the Claude Code CLI you have installed, signed in with your own account. There's no API key to paste into Titan. Without Claude Code, shells work as usual.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="faq">
+      <h2><span class="c">--</span> faq</h2>
+      <dl class="faq">
+        <dt>Why only macOS?</dt>
+        <dd>Titan is a native Mac app: SwiftUI and AppKit for the window, Metal for drawing, Liquid Glass from macOS 26. Its terminal core, libghostty, runs elsewhere, but everything around it is written for the Mac. There are no plans for Linux or Windows.</dd>
+        <dt>Can I download it?</dt>
+        <dd>Not yet. Titan is a personal project and there's no public build. It needs macOS 26 (Tahoe) on Apple Silicon, and <a href="https://claude.com/claude-code" target="_blank" rel="noopener">Claude Code</a> for its Claude panes.</dd>
+        <dt>Does it need an API key?</dt>
+        <dd>No. Titan runs the Claude Code that's installed, so sessions use the account it's signed in with and count against that plan as usual.</dd>
+        <dt>Does it change how Claude Code behaves?</dt>
+        <dd>Barely. It's the same CLI with your settings, skills and MCP servers. Titan adds one short note to the system prompt so Claude knows that pages show up in the feed and how to write paths that link.</dd>
+        <dt>Where are my conversations?</dt>
+        <dd>Where Claude Code keeps them, in <code>~/.claude/projects</code>. Titan reads them for its history list and to resume sessions, and they work in the plain <code>claude</code> TUI as well.</dd>
+      </dl>
+    </section>
+  </main>
+
+  <footer>
+    <span>Built by <a href="/">Cristian Echeverria</a> with Swift and libghostty.</span>
+    <span><a href="https://github.com/crisecheverria" target="_blank" rel="noopener">GitHub</a> · <a href="/">← back to home</a></span>
+  </footer>
+
+  <script src="titan.js?v=3"></script>
+</body>
+</html>
