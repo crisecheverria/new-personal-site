@@ -22,6 +22,7 @@
     <nav>
       <a href="#why">why</a>
       <a href="#claude">claude</a>
+      <a href="#agents">agents</a>
       <a href="#terminal">terminal</a>
       <a href="#config">config</a>
       <a href="#faq">faq</a>
@@ -141,6 +142,34 @@
       </figure>
     </section>
 
+    <section id="agents">
+      <h2><span class="c">--</span> claude drives the terminal</h2>
+      <p class="lead">
+        Ask Claude to start your dev server and it opens a pane for it beside the conversation, where you can watch.
+        It reads the result back before telling you it worked, and the shells you opened stay yours.
+      </p>
+
+      <figure class="media" data-media hidden>
+        <video data-check="agents.mp4?v=1" data-poster="agents-poster.webp?v=1" autoplay muted loop playsinline preload="metadata" aria-label="Recording of Titan: Claude is asked to start the dev server and check the tests. It opens a pane beside the conversation for the server, asks before reading the user's own test pane, then shows the page in the browser pane and reports that the tests pass."></video>
+        <figcaption>Claude starts the dev server beside the conversation, then asks before reading your tests</figcaption>
+      </figure>
+
+      <div class="grid">
+        <article class="card">
+          <h3>In plain sight</h3>
+          <p>Dev servers, builds and tests Claude starts run in a pane next to the conversation, not in a shell you can't see.</p>
+        </article>
+        <article class="card">
+          <h3>Checks before it says done</h3>
+          <p>Claude looks at what the command printed and whether it finished, instead of assuming it worked.</p>
+        </article>
+        <article class="card">
+          <h3>Asks before touching yours</h3>
+          <p>A shell you opened is yours. Claude asks before it reads or types into one, and you can allow it once or for good.</p>
+        </article>
+      </div>
+    </section>
+
     <section id="terminal">
       <h2><span class="c">--</span> and a real terminal</h2>
       <div class="grid">
@@ -158,7 +187,7 @@
         </article>
         <article class="card">
           <h3>Claude's TUI works too</h3>
-          <p>Prefer <code>claude</code> in a shell? Run it in a pane and it still gets Titan's notifications, keep-awake and browser.</p>
+          <p>Prefer <code>claude</code> in a shell? Run it in a pane and it still gets Titan's notifications, keep-awake and browser, and can open panes too.</p>
         </article>
         <article class="card">
           <h3>More than one Claude account</h3>
@@ -192,12 +221,22 @@
 <span class="k">file-links</span> = editor
 <span class="k">keep-awake</span> = true
 
+<span class="c"># keys, in Ghostty's syntax</span>
+<span class="k">keybind</span> = cmd+d=new_split:down
+<span class="k">keybind</span> = cmd+k=send_text:\x0c
+<span class="k">keybind</span> = ctrl+a>c=new_tab
+
+<span class="c"># let Claude open panes</span>
+<span class="k">remote-control</span> = true
+
 <span class="c"># folders to Claude accounts</span>
 <span class="k">claude-account</span> = Personal, <span class="s">~/.claude</span>
 <span class="k">claude-account</span> = Client, <span class="s">~/.claude-client</span>, <span class="s">~/code/client</span></pre>
         <div>
           <h3>Ghostty's settings, then Titan's</h3>
           <p class="small">Titan reads your Ghostty config first and its own on top, so fonts, themes and colours you've set up carry over. <kbd>⌘,</kbd> opens the file, and Titan reloads it when you save.</p>
+          <h3 class="loop-title">Keys you choose</h3>
+          <p class="small">Rebind, remove or add keys, sequences like <kbd>⌃A</kbd> <kbd>C</kbd> included. The menus and palette show the new key as soon as you save.</p>
           <h3 class="loop-title">Uses your Claude Code login</h3>
           <p class="small">Claude panes run the Claude Code CLI you have installed, signed in with your own account. There's no API key to paste into Titan. Without Claude Code, shells work as usual.</p>
         </div>
@@ -214,7 +253,9 @@
         <dt>Does it need an API key?</dt>
         <dd>No. Titan runs the Claude Code that's installed, so sessions use the account it's signed in with and count against that plan as usual.</dd>
         <dt>Does it change how Claude Code behaves?</dt>
-        <dd>Barely. It's the same CLI with your settings, skills and MCP servers. Titan adds one short note to the system prompt so Claude knows that pages show up in the feed and how to write paths that link.</dd>
+        <dd>Barely. It's the same CLI with your settings, skills and MCP servers. Titan adds a short note to the system prompt so Claude knows that pages show up in the feed, how to write paths that link, and, when you turn it on, that it can open panes.</dd>
+        <dt>Can Claude type into my shells?</dt>
+        <dd>Not without asking. It can use the panes it opens itself; for any other, Titan asks you first. It's off until you turn it on.</dd>
         <dt>Where are my conversations?</dt>
         <dd>Where Claude Code keeps them, in <code>~/.claude/projects</code>. Titan reads them for its history list and to resume sessions, and they work in the plain <code>claude</code> TUI as well.</dd>
       </dl>
