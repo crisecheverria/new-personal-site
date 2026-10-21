@@ -41,10 +41,10 @@
         Built on libghostty, the terminal core behind Ghostty.
       </p>
       <div class="cta">
-        <a class="btn primary" href="#demos"><span class="btn-icon">▶</span> Watch it work</a>
-        <a class="btn" href="#config"><span class="btn-icon">⚙</span> Build a config</a>
+        <a class="btn primary" href="https://github.com/crisecheverria/titan-releases/releases/latest"><span class="btn-icon">↓</span> Download for Mac</a>
+        <a class="btn" href="#demos"><span class="btn-icon">▶</span> Watch it work</a>
       </div>
-      <p class="meta">A personal project · macOS 26+ · Apple Silicon</p>
+      <p class="meta">A personal project · macOS 26+ · Apple Silicon · signed and notarized · <a href="https://github.com/crisecheverria/titan-releases/issues/new">send feedback</a></p>
       <figure class="shot">
         <img src="screenshot.webp?v=1" width="2000" height="1250" alt="Titan with a Claude Code session as a feed beside a shell, tabs across the top" />
       </figure>
@@ -467,7 +467,9 @@ titan browser and click Break.</span>
         <dt>Why only macOS?</dt>
         <dd>Titan is a native Mac app: SwiftUI and AppKit for the window, Metal for drawing, Liquid Glass from macOS 26. Its terminal core, libghostty, runs elsewhere, but everything around it is written for the Mac. There are no plans for Linux or Windows.</dd>
         <dt>Can I download it?</dt>
-        <dd>Not yet. Titan is a personal project and there's no public build. It needs macOS 26 (Tahoe) on Apple Silicon, and <a href="https://claude.com/claude-code" target="_blank" rel="noopener">Claude Code</a> for its Claude panes.</dd>
+        <dd>Yes: <a href="https://github.com/crisecheverria/titan-releases/releases/latest">the latest release</a> is a disk image, signed with a Developer ID and notarized by Apple. Open it and drag Titan to Applications. It needs macOS 26 (Tahoe) on Apple Silicon, and <a href="https://claude.com/claude-code" target="_blank" rel="noopener">Claude Code</a> for its Claude panes. Titan checks for updates once a day and installs them from the tab bar.</dd>
+        <dt>Where do I send feedback?</dt>
+        <dd>Titan is a personal project and I'd like to hear what you think. <a href="https://github.com/crisecheverria/titan-releases/issues/new">Open an issue</a> on the releases repo: what works, what doesn't, what you'd want next.</dd>
         <dt>Does it need an API key?</dt>
         <dd>No. Titan runs the Claude Code that's installed, so sessions use the account it's signed in with and count against that plan as usual. pi and other agents use whatever they're set up with.</dd>
         <dt>Does it change how Claude Code behaves?</dt>
