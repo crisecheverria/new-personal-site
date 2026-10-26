@@ -14,478 +14,132 @@
   <link rel="icon" type="image/png" href="icon.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="titan.css?v=6" />
+  <link rel="stylesheet" href="titan.css?v=12" />
 </head>
-<body>
+<body class="landing">
   <header class="nav">
     <a class="nav-home" href="/">~/cristianecheverria.com</a>
     <nav>
-      <a href="#demos">demos</a>
-      <a href="#agents">agents</a>
-      <a href="#actions">actions</a>
-      <a href="#safety">safety</a>
-      <a href="#config">config</a>
-      <a href="#keys">keys</a>
-      <a href="#faq">faq</a>
+      <a href="docs/">docs</a>
+      <a href="https://github.com/crisecheverria/titan-releases/releases">releases</a>
+      <a href="https://github.com/crisecheverria/titan-releases/issues/new">feedback</a>
     </nav>
   </header>
 
   <main>
     <section class="hero">
-      <img class="hero-icon" src="icon.png" width="96" height="96" alt="Titan app icon: a spectrum infinity sign" />
+      <canvas class="liquid" data-liquid aria-hidden="true"></canvas>
+      <img class="hero-icon" src="icon.png" width="88" height="88" alt="Titan app icon: a spectrum infinity sign" />
       <h1>Titan</h1>
-      <p class="tagline">
-        An AI-native terminal for macOS.<br />
-        Shells, Claude Code sessions and agents like pi, side by side in tabs and splits,
-        with a browser they can drive and actions you can script.<br />
-        Built on libghostty, the terminal core behind Ghostty.
-      </p>
+      <p class="tagline">An AI-native terminal for macOS.</p>
       <div class="cta">
         <a class="btn primary" href="https://github.com/crisecheverria/titan-releases/releases/latest"><span class="btn-icon">↓</span> Download for Mac</a>
-        <a class="btn" href="#demos"><span class="btn-icon">▶</span> Watch it work</a>
+        <a class="btn" href="docs/">Read the docs</a>
       </div>
-      <p class="meta">A personal project · macOS 26+ · Apple Silicon · signed and notarized · <a href="https://github.com/crisecheverria/titan-releases/issues/new">send feedback</a></p>
-      <figure class="shot">
+      <p class="meta">macOS 26+ · Apple Silicon · built on libghostty</p>
+      <figure class="frame">
         <img src="screenshot.webp?v=1" width="2000" height="1250" alt="Titan with a Claude Code session as a feed beside a shell, tabs across the top" />
       </figure>
     </section>
 
-    <!-- Demos: one player, a tab for each recording. -->
-    <section id="demos">
-      <h2><span class="c">--</span> see it work</h2>
-      <p class="lead">Recorded in Titan, nothing staged: real Claude Code and pi sessions on a small timer app. Pick one, or let them play through.</p>
-      <div class="player" data-player>
-        <div class="player-tabs" role="tablist" aria-label="Demos">
-          <button role="tab" data-video="change" data-caption="Claude adds a button, starts the dev server in a pane beside the conversation, checks the page in the browser pane, then /diff shows the change and a click on the path opens the file.">
-            <span class="t">Claude makes a change</span><span class="d">edit · check · /diff · open the file</span><i></i>
-          </button>
-          <button role="tab" data-video="pi" data-caption="pi, running in a Titan shell, starts the dev server in a split with titan do, opens the page with titan browser and clicks Break. No plugin: just the titan command.">
-            <span class="t">pi drives Titan</span><span class="d">any agent, through the titan command</span><i></i>
-          </button>
-          <button role="tab" data-video="cli" data-caption="The same actions from a shell: titan do opens a split running the dev server, titan browser loads the page and clicks Start, titan panes lists what is open.">
-            <span class="t">Script it from a shell</span><span class="d">titan do · titan browser · titan panes</span><i></i>
-          </button>
-          <button role="tab" data-video="agents" data-caption="Asked to start the dev server and check the tests, Claude opens a pane for the server, asks before reading your own test pane, then reports the tests pass.">
-            <span class="t">Asks before your panes</span><span class="d">dev server beside, tests read with permission</span><i></i>
-          </button>
-          <button role="tab" data-video="browser" data-caption="Claude adds a dark mode toggle to the timer page, then opens it in the browser pane and clicks the toggle to check it.">
-            <span class="t">A browser it can drive</span><span class="d">load, read and click a page</span><i></i>
-          </button>
-          <button role="tab" data-video="welcome" data-caption="A new session draws Titan's infinity in the theme's colours. The theme changes, light and dark, and everything follows; then a recipe asks its first question.">
-            <span class="t">Your theme, everywhere</span><span class="d">welcome · themes · recipes</span><i></i>
-          </button>
-        </div>
-        <div class="player-stage">
-          <video muted playsinline preload="none" aria-describedby="player-caption"></video>
-          <button class="player-toggle" type="button" aria-label="Pause">❚❚</button>
-        </div>
-        <p class="player-caption" id="player-caption"></p>
-      </div>
+    <section class="feature">
+      <p class="eyebrow"><span>01</span> feed</p>
+      <h2>Claude Code, set for reading.</h2>
+      <p>Markdown replies, folded tool calls, permissions inline. A conversation, not a screen scrape.</p>
+      <figure class="frame"><video data-autoplay muted loop playsinline preload="none" poster="change-poster.webp?v=2" src="change.mp4?v=2" aria-label="Claude adds a button, checks the page in the browser pane, then /diff shows the change"></video></figure>
     </section>
 
-    <section id="why">
-      <h2><span class="c">--</span> why a terminal built around agents</h2>
-      <p class="lead">
-        Claude Code's TUI takes over a whole terminal: its own transcript, its own input box, its own spinners.
-        Run three of them and you're flipping through tabs to find the one that's waiting on you.
-        Titan runs Claude Code in its structured stream mode instead, so a session is a pane like any other, and Titan knows what each one is doing.
-      </p>
-      <div class="grid">
-        <article class="card">
-          <h3>A feed, not a screen scrape</h3>
-          <p>Replies, tool calls and their output arrive as messages. Titan sets replies as Markdown for reading, folds tool output until you open it, and never scrapes text off a screen.</p>
-        </article>
-        <article class="card">
-          <h3>Know which session needs you</h3>
-          <p>Tabs show whether their sessions are working, done or waiting on you. <kbd>⌘J</kbd> jumps to the one that's waiting; hover a tab to see what each session is doing.</p>
-        </article>
-        <article class="card">
-          <h3>Sessions outlive the window</h3>
-          <p>Shells and Claude sessions run in <code>titan-ptyd</code>, a small daemon, so quitting or updating Titan doesn't stop them. Reopen it and they're where you left them.</p>
-        </article>
-      </div>
+    <section class="feature">
+      <p class="eyebrow"><span>02</span> status</p>
+      <h2>Know which agent needs you.</h2>
+      <ul class="legend">
+        <li><span class="s-working">▶</span> working</li>
+        <li><span class="s-waiting">●</span> needs you</li>
+        <li><span class="s-done">●</span> done</li>
+        <li><span class="s-idle">○</span> idle</li>
+      </ul>
+      <p><kbd>⌘J</kbd> jumps to the one that's waiting. <kbd>⌘E</kbd> shows them all.</p>
+      <figure class="frame zoomable"><img src="overview.webp?v=1" loading="lazy" width="2000" height="445" alt="Titan's Show All Tabs view: every tab as a tile with its panes" /></figure>
     </section>
 
-    <!-- Agents: Claude pane, claude in a shell, pi and the rest. -->
-    <section id="agents">
-      <h2><span class="c">--</span> bring your agent</h2>
-      <p class="lead">
-        Use Titan's own Claude pane, the <code>claude</code> CLI you already know, or another coding agent such as pi or Codex.
-        Each one runs in a pane, can open panes and drive the browser beside it, and stays out of the panes that aren't its own.
-      </p>
-
-      <div class="seg" role="tablist" aria-label="Agents" data-tabs="agent">
-        <button role="tab" data-tab="pane" aria-selected="true">Claude pane</button>
-        <button role="tab" data-tab="cli">claude CLI</button>
-        <button role="tab" data-tab="pi">pi</button>
-        <button role="tab" data-tab="other">Codex &amp; others</button>
-      </div>
-
-      <div class="agent-panels">
-        <div class="agent-panel" data-panel="agent:pane">
-          <div class="term">
-            <div class="term-bar"><span></span><span></span><span></span><em>⌘N · New Claude Session</em></div>
-<pre><span class="p">you</span> Start the dev server and check the page
-<span class="m">▸ Ran 2 commands</span>
-<span class="m">▸ titan_do new_split direction=right command="npm run dev"</span>
-<span class="m">▸ browser_navigate localhost:4173 · browser_click "Break"</span>
-<span class="r">The page loads and Break sets the timer to 05:00.</span>
-<span class="r">The dev server is still running in a pane on the right.</span></pre>
-          </div>
-          <div>
-            <h3>Claude Code as a conversation</h3>
-            <p class="small">The same <code>claude</code> you have installed, with your settings, <code>CLAUDE.md</code>, skills and MCP servers, drawn as a feed with its own composer, model picker and context ring. Titan gives it its browser and pane tools as an MCP server, <code>mcp__titan__*</code>.</p>
-            <p class="small">Uses your Claude Code login. There's no API key to paste into Titan.</p>
-          </div>
-        </div>
-
-        <div class="agent-panel" data-panel="agent:cli" hidden>
-          <div class="term">
-            <div class="term-bar"><span></span><span></span><span></span><em>zsh · ~/code/pomodoro</em></div>
-<pre><span class="p">pomodoro ❯</span> claude
-<span class="m">╭──────────────────────────────────────╮</span>
-<span class="m">│ ✻ Welcome to Claude Code             │</span>
-<span class="m">╰──────────────────────────────────────╯</span>
-<span class="m">  mcp: titan · browser_*, titan_do, titan_panes</span>
-<span class="p">&gt;</span> open the timer in the browser beside me</pre>
-          </div>
-          <div>
-            <h3>Prefer the TUI? Type <code>claude</code></h3>
-            <p class="small">In a Titan shell, <code>claude</code> starts with Titan's hooks and tools added for that run only, never written to your settings: the tab shows when it's working or waiting, the Mac stays awake while it works, and it gets the browser and <code>titan_do</code> tools.</p>
-            <p class="small">With several Claude accounts, the folder picks the account, or <code>claude --account Work</code> does.</p>
-          </div>
-        </div>
-
-        <div class="agent-panel" data-panel="agent:pi" hidden>
-          <div class="term">
-            <div class="term-bar"><span></span><span></span><span></span><em>π · ~/code/pomodoro</em></div>
-<pre><span class="p">pomodoro ❯</span> pi
-<span class="r">Start the dev server beside you with titan, open it in the
-titan browser and click Break.</span>
-<span class="m">$ titan do new_split direction=right command="npm run dev"</span>
-<span class="m">$ titan browser navigate url=http://localhost:4173/</span>
-<span class="m">$ titan browser click ref=e3</span>
-<span class="r">Done.</span></pre>
-          </div>
-          <div>
-            <h3>pi works as it is</h3>
-            <p class="small">pi needs no plugin and no MCP setup. In a Titan shell it runs <code>titan do</code>, <code>titan panes</code> and <code>titan browser</code> with its bash tool, and finds them from <code>titan actions</code>. Its status shows on the tab from the escapes pi already sends.</p>
-            <p class="small">Titan knows pi when it sees it, even renamed to <code>pi</code> by node, and keeps it to the panes it opened.</p>
-          </div>
-        </div>
-
-        <div class="agent-panel" data-panel="agent:other" hidden>
-          <div class="term">
-            <div class="term-bar"><span></span><span></span><span></span><em>zsh · ~/code/pomodoro</em></div>
-<pre><span class="p">pomodoro ❯</span> codex
-<span class="m">$ titan actions</span>
-<span class="m">new_split direction=right|down [command=CMD] [folder=DIR]</span>
-<span class="m">read_pane pane=ID [lines=N]</span>
-<span class="m">titan browser &lt;tool&gt;: navigate, snapshot, click, type…</span></pre>
-          </div>
-          <div>
-            <h3>Codex, OpenCode, Gemini, Aider…</h3>
-            <p class="small">Any agent that can run a shell command can drive Titan the same way. Titan recognises Codex, OpenCode, Gemini, Aider, Amp, Goose, Crush and Cursor's agent by their process, or by <code>AI_AGENT</code> in their environment, and gives them the same pane limits as Claude.</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="table-wrap">
-        <table class="compare">
-          <thead>
-            <tr><th></th><th>Claude pane</th><th><code>claude</code> in a shell</th><th>pi, Codex &amp; others</th></tr>
-          </thead>
-          <tbody>
-            <tr><td>Status on the tab, <kbd>⌘J</kbd> to the waiting one</td><td class="y">●</td><td class="y">●</td><td class="y">● <span>from the escapes it sends</span></td></tr>
-            <tr><td>Opens panes, reads them back</td><td class="y">● <span>titan_do</span></td><td class="y">● <span>titan_do</span></td><td class="y">● <span>titan do</span></td></tr>
-            <tr><td>Drives the browser beside it</td><td class="y">● <span>browser_*</span></td><td class="y">● <span>browser_*</span></td><td class="y">● <span>titan browser</span></td></tr>
-            <tr><td>Kept to its own panes</td><td class="y">●</td><td class="y">●</td><td class="y">●</td></tr>
-            <tr><td>Replies set as Markdown, <code>/diff</code>, pages in the feed</td><td class="y">●</td><td class="n">its own TUI</td><td class="n">its own TUI</td></tr>
-            <tr><td>Keeps the Mac awake while it works</td><td class="y">●</td><td class="y">●</td><td class="n">–</td></tr>
-          </tbody>
-        </table>
-      </div>
+    <section class="feature">
+      <p class="eyebrow"><span>03</span> browser</p>
+      <h2>A browser your agent can drive.</h2>
+      <p>It opens your page beside the conversation, reads it and clicks through it.</p>
+      <figure class="frame"><video data-autoplay muted loop playsinline preload="none" poster="browser-poster.webp?v=2" src="browser.mp4?v=2" aria-label="Claude adds a dark mode toggle, opens the page in the browser pane and clicks it"></video></figure>
     </section>
 
-    <section id="claude">
-      <h2><span class="c">--</span> the claude pane</h2>
-      <p class="lead">
-        <kbd>⌘N</kbd> starts a Claude Code session in a folder you pick, drawn as a conversation with an input box of its own.
-      </p>
-      <div class="grid">
-        <article class="card">
-          <h3>Send while it works</h3>
-          <p><kbd>↩</kbd> sends at once, and Claude takes the message in at the running turn's next step. <kbd>⌥↩</kbd> queues it for when the turn ends instead.</p>
-        </article>
-        <article class="card">
-          <h3>Run what it suggests</h3>
-          <p>Shell code blocks in a reply get <strong>Run</strong>, <strong>Run in a shell</strong> and <strong>Copy</strong>. Output streams in under the block. Nothing runs without the click.</p>
-        </article>
-        <article class="card">
-          <h3>See what changed</h3>
-          <p><code>/diff</code> and <code>/git</code> open a side pane with every file changed since the session started, plus git status, recent commits and stashes.</p>
-        </article>
-        <article class="card">
-          <h3>Every path is a link</h3>
-          <p>File paths and URLs in the feed are clickable. A file opens beside the pane at its line, in a built-in viewer or your <code>$EDITOR</code>.</p>
-        </article>
-        <article class="card">
-          <h3>Pages and diagrams, live</h3>
-          <p>HTML and SVG files Claude writes show up in the conversation as live pages. A <code>mermaid</code> block is drawn as a diagram, in the theme's colours.</p>
-        </article>
-        <article class="card">
-          <h3>A worktree each</h3>
-          <p><kbd>⇧⌘N</kbd> starts a session in a git worktree of its own, so two sessions can work on one repository without stepping on each other.</p>
-        </article>
-        <article class="card">
-          <h3>Model, effort, context</h3>
-          <p>A model picker, an effort slider and a ring for how full the context window is. Permission modes run from asking every time to YOLO.</p>
-        </article>
-        <article class="card">
-          <h3>@ and /</h3>
-          <p><code>@</code> fuzzy-finds files to mention. <code>/</code> lists the commands and skills installed for that session, with their descriptions.</p>
-        </article>
-        <article class="card">
-          <h3>Attach anything</h3>
-          <p>Paste or drop images and files into a conversation, or drop them on a tab: a Claude session attaches them, a shell types their paths.</p>
-        </article>
-      </div>
-
-      <div class="shots">
-        <figure class="media zoomable">
-          <img src="feed.webp?v=1" loading="lazy" alt="A Claude session in Titan: a reply set as Markdown, tool steps folded into one line, and a permission card asking to run a command" />
-          <figcaption>Replies set for reading, steps folded, permissions inline</figcaption>
-        </figure>
-        <figure class="media zoomable">
-          <img src="diff.webp?v=1" loading="lazy" alt="Titan's side pane listing the files a Claude session changed, with their diffs" />
-          <figcaption><code>/diff</code>: everything the session changed</figcaption>
-        </figure>
-      </div>
+    <section class="feature">
+      <p class="eyebrow"><span>04</span> any agent</p>
+      <h2>Bring your own agent.</h2>
+      <p>Anything that can run a shell command can drive Titan.</p>
+      <ul class="chips">
+        <li><a href="https://claude.com/claude-code">Claude Code</a></li>
+        <li><a href="https://pi.dev">pi</a></li>
+        <li><a href="https://openai.com/codex/">Codex</a></li>
+        <li><a href="https://opencode.ai">OpenCode</a></li>
+        <li>Gemini</li>
+        <li>Aider</li>
+        <li>Amp</li>
+      </ul>
+      <figure class="frame"><video data-autoplay muted loop playsinline preload="none" poster="pi-poster.webp?v=2" src="pi.mp4?v=2" aria-label="pi starts a dev server in a split with titan do and clicks through the page with titan browser"></video></figure>
     </section>
 
-    <!-- titan actions: one action, three ways to run it. -->
-    <section id="actions">
-      <h2><span class="c">--</span> titan actions</h2>
-      <p class="lead">
-        Every command in Titan is a named action. Bind it to a key, run it from a shell with <code>titan do</code>, or let an agent run it.
-        Pick an action to see each way to call it, and what Titan answers.
-      </p>
-
-      <div class="actions" data-actions>
-        <div class="actions-list">
-          <input type="search" placeholder="filter actions…" aria-label="Filter actions" data-filter />
-          <ul data-list></ul>
-        </div>
-        <div class="actions-detail">
-          <div class="seg small-seg" role="tablist" aria-label="How to run it" data-tabs="via">
-            <button role="tab" data-tab="shell" aria-selected="true">from a shell</button>
-            <button role="tab" data-tab="agent">from an agent</button>
-            <button role="tab" data-tab="key">as a key</button>
-          </div>
-          <div class="term">
-            <div class="term-bar"><span></span><span></span><span></span><em data-where>zsh · titan do</em></div>
-            <pre data-term></pre>
-          </div>
-          <p class="small" data-about></p>
-        </div>
-      </div>
-      <p class="small">Needs <code>remote-control = true</code> in the config, except <code>titan browser</code>. <code>titan actions</code> lists every action, <code>titan panes</code> what's open.</p>
+    <section class="feature">
+      <p class="eyebrow"><span>05</span> pane limits</p>
+      <h2>Agents keep to their own panes.</h2>
+      <p>They use the panes they open. For yours, Titan asks you first.</p>
+      <figure class="frame"><video data-autoplay muted loop playsinline preload="none" poster="agents-poster.webp?v=2" src="agents.mp4?v=2" aria-label="Claude opens a pane for the dev server and asks before reading your test pane"></video></figure>
     </section>
 
-    <!-- Safety: what an agent may touch, by remote-control mode. -->
-    <section id="safety">
-      <h2><span class="c">--</span> agents keep to their panes</h2>
-      <p class="lead">
-        An agent can use the panes it opened and the ones you grant it. For any other shell, Titan asks you first, so an agent that was talked into it can't type into your ssh session or a shell with sudo still warm.
-        Try it: pick a mode, then have pi type into each pane.
-      </p>
-
-      <div class="safety" data-safety>
-        <div class="safety-controls">
-          <span class="label">remote-control =</span>
-          <div class="seg small-seg" role="tablist" aria-label="remote-control" data-tabs="mode">
-            <button role="tab" data-tab="false">false</button>
-            <button role="tab" data-tab="true" aria-selected="true">true</button>
-            <button role="tab" data-tab="all">all</button>
-          </div>
-        </div>
-        <div class="panes-demo">
-          <div class="pane-box agent"><b>π pi</b><span>~/code/pomodoro · the agent</span></div>
-          <button class="pane-box" data-pane="opened"><b>npm run dev</b><span>opened by pi</span><em></em></button>
-          <button class="pane-box" data-pane="granted"><b>tests</b><span>you let agents use it</span><em></em></button>
-          <button class="pane-box" data-pane="yours"><b>ssh prod</b><span>your shell</span><em></em></button>
-        </div>
-        <p class="safety-result" data-result>Click a pane to have pi type into it.</p>
-      </div>
-
-      <div class="grid">
-        <article class="card">
-          <h3>Its own browser, and only that</h3>
-          <p>An agent drives the browser pane beside the pane it runs in, not another conversation's. Agents' browser panes keep cookies apart from yours, so an agent never browses signed in as you.</p>
-        </article>
-        <article class="card">
-          <h3>Known by where it started</h3>
-          <p>Titan reads which pane an agent belongs to from the agent's own process, not from what a request claims, so pointing <code>TITAN_PANE</code> at another pane gains nothing.</p>
-        </article>
-        <article class="card">
-          <h3>A log of what it did</h3>
-          <p>A pane an agent types into or reads shows a badge for a moment, and <strong>Show Remote Control Log</strong> lists the last 200 requests: who, what, which pane, and what you said.</p>
-        </article>
-      </div>
+    <section class="feature">
+      <p class="eyebrow"><span>06</span> review</p>
+      <h2>Every change, in one pane.</h2>
+      <p><code>/diff</code> lists every file the session touched, with git status beside it.</p>
+      <figure class="frame zoomable"><img src="diff.webp?v=1" loading="lazy" width="2000" height="1250" alt="Titan's side pane listing the files a Claude session changed, with their diffs" /></figure>
     </section>
 
-    <!-- Config builder. -->
-    <section id="config">
-      <h2><span class="c">--</span> set it up</h2>
-      <ol class="setup">
-        <li><strong>Install an agent.</strong> <a href="https://claude.com/claude-code" target="_blank" rel="noopener">Claude Code</a> for Claude panes, and pi or any other agent you like for shells. Without one, shells work as usual.</li>
-        <li><strong>Open the config with <kbd>⌘,</kbd>.</strong> It's <code>~/.config/titan/config</code>, every setting written out and commented on first launch. Titan reads your Ghostty config first, so your font and theme carry over.</li>
-        <li><strong>Save.</strong> Titan applies changes within a second, and a line it can't read shows in a bar with its line number.</li>
-      </ol>
+    <section class="feature">
+      <p class="eyebrow"><span>07</span> actions</p>
+      <h2>Every command is an action.</h2>
+      <p>Bind it to a key, run it with <code>titan do</code>, or let an agent run it.</p>
+      <figure class="frame"><video data-autoplay muted loop playsinline preload="none" poster="cli-poster.webp?v=2" src="cli.mp4?v=2" aria-label="titan do opens a split, titan browser loads the page and clicks Start, titan panes lists what is open"></video></figure>
+    </section>
 
-      <div class="builder" data-builder>
-        <form class="builder-form" autocomplete="off">
-          <div class="presets">
-            <span class="label">start from</span>
-            <button type="button" data-preset="minimal">minimal</button>
-            <button type="button" data-preset="agents">agent-heavy</button>
-            <button type="button" data-preset="keys">keyboard-first</button>
-          </div>
+    <section class="feature">
+      <p class="eyebrow"><span>08</span> themes</p>
+      <h2>Your theme, everywhere.</h2>
+      <p>Titan reads your Ghostty config. Change the theme and everything follows.</p>
+      <figure class="frame"><video data-autoplay muted loop playsinline preload="none" poster="welcome-poster.webp?v=2" src="welcome.mp4?v=2" aria-label="A new session draws Titan's infinity in the theme's colours as the theme switches between light and dark"></video></figure>
+    </section>
 
-          <fieldset>
-            <legend>Look</legend>
-            <label>theme
-              <select name="theme">
-                <option>Gruvbox Dark Hard</option><option>Catppuccin Mocha</option><option>Catppuccin Latte</option>
-                <option>TokyoNight</option><option>Kanagawa Wave</option><option>Rose Pine Dawn</option><option>Aura</option><option value="">(Ghostty's)</option>
-              </select>
-            </label>
-            <label>font-family <input name="font-family" value="JetBrains Mono" /></label>
-            <label>font-size <input name="font-size" type="number" min="9" max="32" value="14" /></label>
-            <label>cursor-style
-              <select name="cursor-style"><option>block</option><option selected>bar</option><option>underline</option></select>
-            </label>
-            <label>tab-position
-              <select name="tab-position"><option>top</option><option>left</option></select>
-            </label>
-          </fieldset>
+    <section class="feature">
+      <p class="eyebrow"><span>09</span> terminal</p>
+      <h2>And underneath, a real terminal.</h2>
+      <ul class="facts">
+        <li><b>libghostty inside</b><span>Ghostty's VT core, drawn with Metal.</span></li>
+        <li><b>Sessions outlive the window</b><span>Quit or update; they keep running.</span></li>
+        <li><b>No API key</b><span>Uses the Claude Code you're signed into.</span></li>
+      </ul>
+    </section>
 
-          <fieldset>
-            <legend>Claude pane</legend>
-            <label>reading-width <span class="out" data-out="reading-width">95</span>
-              <input name="reading-width" type="range" min="60" max="140" value="95" />
-            </label>
-            <label>agent-background
-              <select name="agent-background"><option>generated</option><option>none</option></select>
-            </label>
-            <label>file-links
-              <select name="file-links"><option>viewer</option><option>editor</option></select>
-            </label>
-            <label>editor
-              <select name="editor"><option value="">($EDITOR)</option><option>nvim</option><option>hx</option><option>code</option><option>zed</option></select>
-            </label>
-          </fieldset>
-
-          <fieldset>
-            <legend>Agents</legend>
-            <label>remote-control
-              <select name="remote-control"><option value="false">false</option><option value="true" selected>true</option><option value="all">all</option></select>
-            </label>
-            <label class="check"><input type="checkbox" name="keep-awake" checked /> keep-awake</label>
-            <label class="check"><input type="checkbox" name="links-in-titan" checked /> links-in-titan</label>
-            <label>notify-after <input name="notify-after" type="number" min="0" max="600" value="10" /></label>
-          </fieldset>
-
-          <fieldset>
-            <legend>Extras</legend>
-            <label class="check"><input type="checkbox" name="x-recipe" checked /> a recipe: dev server + browser</label>
-            <label class="check"><input type="checkbox" name="x-keys" /> keybinds</label>
-            <label class="check"><input type="checkbox" name="x-accounts" /> two Claude accounts</label>
-            <label class="check"><input type="checkbox" name="x-comments" checked /> explain each line</label>
-          </fieldset>
-        </form>
-
-        <div class="builder-out">
-          <div class="term">
-            <div class="term-bar"><span></span><span></span><span></span><em>~/.config/titan/config</em><button type="button" class="copy" data-copy>copy</button></div>
-            <pre class="code" data-config></pre>
-          </div>
-          <p class="small">Same syntax as Ghostty's: <code>key = value</code>, one per line. Anything you leave out keeps its default.</p>
-        </div>
+    <section class="closing">
+      <canvas class="liquid" data-liquid aria-hidden="true"></canvas>
+      <h2>Try it.</h2>
+      <div class="cta">
+        <a class="btn primary" href="https://github.com/crisecheverria/titan-releases/releases/latest"><span class="btn-icon">↓</span> Download for Mac</a>
+        <a class="btn" href="docs/">Read the docs →</a>
       </div>
-    </section>
-
-    <section id="keys">
-      <h2><span class="c">--</span> keys</h2>
-      <p class="lead">The defaults. Every one can be rebound, removed or turned into a sequence with <code>keybind</code>, and the menus show the new key as soon as you save.</p>
-      <input type="search" class="keys-filter" placeholder="filter: split, tab, claude, ⌘E…" aria-label="Filter keys" data-keys-filter />
-      <div class="keys" data-keys></div>
-    </section>
-
-    <section id="terminal">
-      <h2><span class="c">--</span> and a real terminal</h2>
-      <div class="grid">
-        <article class="card">
-          <h3>libghostty inside</h3>
-          <p>The same VT core as Ghostty, drawn with Metal. Improvements upstream arrive as a rebuild, not a rewrite.</p>
-        </article>
-        <article class="card">
-          <h3>Tabs and splits</h3>
-          <p><kbd>⌘D</kbd> and <kbd>⇧⌘D</kbd> split, <kbd>⇧⌘↩</kbd> expands a pane, and a grip shows on the divider as you drag it. Drag panes onto tabs, tabs out into windows.</p>
-        </article>
-        <article class="card">
-          <h3>Recipes</h3>
-          <p>Saved setups of shells and a browser in the config. They ask for what they need, a branch or a port, then open everything beside the pane you're in.</p>
-        </article>
-        <article class="card">
-          <h3>Images in the shell</h3>
-          <p>The Kitty graphics protocol: <code>kitty icat</code>, yazi and ranger previews, <code>chafa</code>, image.nvim. <code>titan diagram</code> draws a Mermaid file right in the shell.</p>
-        </article>
-        <article class="card">
-          <h3>What's still running</h3>
-          <p>A dev server an agent backgrounded, a <code>nohup</code> from a pane you closed: <strong>Running in Background</strong> finds them, with their ports, and stops them.</p>
-        </article>
-        <article class="card">
-          <h3>More than one Claude account</h3>
-          <p>Map folders to Claude accounts and each session opens under the right one, its history kept apart. Continue a session under the other account in one click.</p>
-        </article>
-      </div>
-
-      <figure class="media zoomable">
-        <img src="overview.webp?v=1" loading="lazy" alt="Titan's Show All Tabs view: every tab as a tile with its panes" />
-        <figcaption><kbd>⌘E</kbd> shows every tab and its panes</figcaption>
-      </figure>
-    </section>
-
-    <section id="faq">
-      <h2><span class="c">--</span> faq</h2>
-      <dl class="faq">
-        <dt>Can I use pi or Codex instead of Claude?</dt>
-        <dd>Yes. Run them in a Titan shell. They drive Titan with the <code>titan</code> command (<code>titan do</code>, <code>titan panes</code>, <code>titan browser</code>), and Titan keeps them to their own panes as it does Claude. The Claude pane itself is for Claude Code.</dd>
-        <dt>Can agents type into my shells?</dt>
-        <dd>Not without asking. They can use the panes they open themselves and the ones you grant; for any other shell, Titan asks you first, and you can allow it once or for that pane. It's all off until you set <code>remote-control = true</code>.</dd>
-        <dt>Why only macOS?</dt>
-        <dd>Titan is a native Mac app: SwiftUI and AppKit for the window, Metal for drawing, Liquid Glass from macOS 26. Its terminal core, libghostty, runs elsewhere, but everything around it is written for the Mac. There are no plans for Linux or Windows.</dd>
-        <dt>Can I download it?</dt>
-        <dd>Yes: <a href="https://github.com/crisecheverria/titan-releases/releases/latest">the latest release</a> is a disk image, signed with a Developer ID and notarized by Apple. Open it and drag Titan to Applications. It needs macOS 26 (Tahoe) on Apple Silicon, and <a href="https://claude.com/claude-code" target="_blank" rel="noopener">Claude Code</a> for its Claude panes. Titan checks for updates once a day and installs them from the tab bar.</dd>
-        <dt>Where do I send feedback?</dt>
-        <dd>Titan is a personal project and I'd like to hear what you think. <a href="https://github.com/crisecheverria/titan-releases/issues/new">Open an issue</a> on the releases repo: what works, what doesn't, what you'd want next.</dd>
-        <dt>Does it need an API key?</dt>
-        <dd>No. Titan runs the Claude Code that's installed, so sessions use the account it's signed in with and count against that plan as usual. pi and other agents use whatever they're set up with.</dd>
-        <dt>Does it change how Claude Code behaves?</dt>
-        <dd>Barely. It's the same CLI with your settings, skills and MCP servers. Titan adds a short note to the system prompt so Claude knows that pages show up in the feed, how to write paths that link, and, when you turn it on, that it can open panes.</dd>
-        <dt>Where are my conversations?</dt>
-        <dd>Where Claude Code keeps them, in <code>~/.claude/projects</code>. Titan reads them for its history list and to resume sessions, and they work in the plain <code>claude</code> TUI as well.</dd>
-      </dl>
+      <p class="meta">Signed and notarized. Updates itself from the tab bar.</p>
     </section>
   </main>
 
   <footer>
-    <span>Built by <a href="/">Cristian Echeverria</a> with Swift and libghostty.</span>
-    <span><a href="https://github.com/crisecheverria" target="_blank" rel="noopener">GitHub</a> · <a href="/">← back to home</a></span>
+    <span>Built by <a href="/">Cristian Echeverria</a> on <a href="https://ghostty.org">libghostty</a>.</span>
+    <span><a href="docs/">docs</a> · <a href="https://github.com/crisecheverria/titan-releases/issues/new">feedback</a> · <a href="/">← home</a></span>
   </footer>
 
   <div class="lightbox" data-lightbox hidden><img alt="" /></div>
-  <script src="titan.js?v=6"></script>
+  <script src="titan.js?v=10"></script>
 </body>
 </html>

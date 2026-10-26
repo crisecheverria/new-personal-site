@@ -1,5 +1,5 @@
-// Titan's page: the demo player, the agent tabs, the actions explorer, the
-// pane-limits demo, the config builder and the key list. No dependencies.
+// Titan's pages: the demos, the liquid, the docs' contents, the agent tabs,
+// the actions explorer, the pane-limits demo, the config builder and the keys.
 (() => {
   const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
   const $ = (sel, root = document) => root.querySelector(sel);
@@ -28,52 +28,243 @@
   });
   const selected = (group) => $(`[data-tabs="${group}"] [aria-selected="true"]`)?.dataset.tab;
 
-  // ---- Demo player: one video, a tab per recording, playing through in turn.
-  const player = $("[data-player]");
-  if (player) {
-    const video = $("video", player);
-    const caption = $(".player-caption", player);
-    const toggle = $(".player-toggle", player);
-    const tabs = $$("[role=tab]", player);
-    let current = -1;
-    let started = false;
-
-    const show = (i, play) => {
-      current = (i + tabs.length) % tabs.length;
-      tabs.forEach((t, j) => {
-        t.setAttribute("aria-selected", String(j === current));
-        $("i", t).style.width = "0";
-      });
-      const name = tabs[current].dataset.video;
-      video.poster = `${name}-poster.webp?v=2`;
-      video.src = `${name}.mp4?v=2`;
-      caption.textContent = tabs[current].dataset.caption;
-      if (play) video.play().catch(() => {});
-    };
-    tabs.forEach((t, i) => t.addEventListener("click", () => { started = true; show(i, true); }));
-    player.addEventListener("keydown", (e) => {
-      if (!tabs.includes(document.activeElement)) return;
-      if (e.key === "ArrowDown" || e.key === "ArrowRight") { e.preventDefault(); show(current + 1, true); tabs[current].focus(); }
-      if (e.key === "ArrowUp" || e.key === "ArrowLeft") { e.preventDefault(); show(current - 1, true); tabs[current].focus(); }
-    });
-    video.addEventListener("timeupdate", () => {
-      if (video.duration) $("i", tabs[current]).style.width = `${(video.currentTime / video.duration) * 100}%`;
-    });
-    // One plays through, then the next; with reduced motion, nothing moves on its own.
-    video.addEventListener("ended", () => { if (!reduced) show(current + 1, true); });
-    video.addEventListener("play", () => { toggle.textContent = "❚❚"; toggle.setAttribute("aria-label", "Pause"); });
-    video.addEventListener("pause", () => { toggle.textContent = "▶"; toggle.setAttribute("aria-label", "Play"); });
-    const flip = () => (video.paused ? video.play().catch(() => {}) : video.pause());
-    toggle.addEventListener("click", flip);
-    video.addEventListener("click", flip);
-
-    show(0, false);
-    // Plays once it's on screen, pauses when scrolled away.
+  // ---- Demos: each recording plays while it's on screen, and stops when it isn't.
+  // With reduced motion they wait for a click, with controls to start them.
+  $$("video[data-autoplay]").forEach((video) => {
+    if (reduced) { video.controls = true; video.preload = "metadata"; return; }
     new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting && (!reduced || started)) video.play().catch(() => {});
-      else if (!entry.isIntersecting) video.pause();
+      if (entry.isIntersecting) video.play().catch(() => {});
+      else video.pause();
     }, { threshold: 0.35 }).observe(video);
+  });
+
+  // ---- Docs contents: the section being read is marked.
+  const toc = $("[data-toc]");
+  if (toc) {
+    const links = $$("a", toc);
+    const sections = links.map((a) => $(a.getAttribute("href"))).filter(Boolean);
+    const mark = () => {
+      let current = sections[0];
+      sections.forEach((s) => { if (s.getBoundingClientRect().top < innerHeight * 0.3) current = s; });
+      links.forEach((a) => a.setAttribute("aria-current", String(a.getAttribute("href") === `#${current.id}`)));
+    };
+    addEventListener("scroll", mark, { passive: true });
+    mark();
   }
+
+  // ---- Liquid: the app's welcome backdrop (LiquidInfinity.swift), ported from
+  // Metal to WebGL. Two lobes and the neck between them, Titan's infinity seen
+  // from the side, rising from the bottom of the canvas; lit at the rim from the
+  // theme's blue to its magenta, under a faint scatter of specks.
+  const LIQUID_FRAG = `
+precision highp float;
+uniform vec4 frame;   // width, height in pixels, seconds, 1 for a light theme
+uniform vec4 turn;    // -1...1 each way: where it is turned toward
+uniform vec3 bg, fg, blue, magenta;
+
+vec3 rotX(vec3 p, float a) { float c = cos(a), s = sin(a); return vec3(p.x, c * p.y - s * p.z, s * p.y + c * p.z); }
+vec3 rotY(vec3 p, float a) { float c = cos(a), s = sin(a); return vec3(c * p.x + s * p.z, p.y, -s * p.x + c * p.z); }
+float smin(float a, float b, float k) { float h = max(k - abs(a - b), 0.0) / k; return min(a, b) - h * h * k * 0.25; }
+float hash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+
+float map(vec3 p, float t) {
+  vec3 a = vec3(-0.55 + 0.07 * sin(t * 0.31), -0.92 + 0.06 * sin(t * 0.43), 0.0);
+  vec3 b = vec3(0.55 + 0.07 * sin(t * 0.27 + 1.0), -0.98 + 0.06 * sin(t * 0.37 + 2.0), 0.1 * sin(t * 0.2));
+  vec3 c = vec3(0.6 * sin(t * 0.17), -0.42 + 0.1 * sin(t * 0.29), 0.3 * cos(t * 0.17));
+  float d = smin(length(p - a) - 0.8, length(p - b) - 0.74, 0.55);
+  d = smin(d, length(p - c) - 0.3, 0.45);
+  return d + 0.025 * sin(3.1 * p.x + t * 0.6) * sin(2.7 * p.y - t * 0.5) * sin(3.3 * p.z + t * 0.4);
+}
+
+vec3 normalAt(vec3 p, float t) {
+  const vec2 k = vec2(1.0, -1.0);
+  const float e = 0.002;
+  return normalize(k.xyy * map(p + k.xyy * e, t) + k.yyx * map(p + k.yyx * e, t)
+                 + k.yxy * map(p + k.yxy * e, t) + k.xxx * map(p + k.xxx * e, t));
+}
+
+// One ray through uv: the liquid shaded, premultiplied, over behind; edge is
+// set when it ran along the outline, where more rays are taken.
+vec4 trace(vec2 uv, float unit, vec4 behind, out bool edge) {
+  float t = frame.z;
+  bool light = frame.w > 0.5;
+  float tip = 0.12 + turn.y * 0.08;
+  float sway = 0.14 * sin(t * 0.2) + turn.x * 0.18;
+  vec3 ro = rotY(rotX(vec3(0.0, 0.0, 4.0), -tip), -sway);
+  vec3 rd = rotY(rotX(normalize(vec3(uv, -4.0)), -tip), -sway);
+
+  float pixel = 1.0 / (unit * 4.0);
+  float dist = 2.6;
+  bool hit = false;
+  float closest = 1e3, closestDist = 0.0;
+  for (int i = 0; i < 64; i++) {
+    float d = map(ro + rd * dist, t);
+    float pixels = d / (pixel * dist);
+    if (pixels < closest) { closest = pixels; closestDist = dist; }
+    if (d < 0.0008 * dist) { hit = true; break; }
+    dist += d * 0.9;
+    if (dist > 6.0) break;
+  }
+  float cover = hit ? 1.0 : 1.0 - smoothstep(0.0, 1.0, closest);
+  edge = closest < 3.0;
+  if (cover <= 0.0) return behind;
+  if (!hit) dist = closestDist;
+
+  vec3 p = ro + rd * dist;
+  vec3 n = normalAt(p, t);
+  float facing = max(dot(n, -rd), 0.0);
+  float rim = pow(1.0 - facing, 2.4);
+  vec3 r = reflect(rd, n);
+  vec3 env = mix(blue, magenta, smoothstep(-0.8, 0.8, r.x * 0.8 + r.y * 0.4 + 0.3 * sin(t * 0.25)));
+  float turned = 1.0 - facing;
+  float box = smoothstep(0.35, 0.75, n.y - 0.35 * n.x) * smoothstep(0.3, 0.55, turned) * smoothstep(0.92, 0.7, turned);
+  float kick = smoothstep(0.72, 0.86, r.x) * smoothstep(0.18, 0.04, abs(r.y + 0.1));
+  vec3 inner = mix(blue, magenta, smoothstep(-1.0, -0.2, p.y + 0.3 * n.x));
+  float depth = facing * facing;
+  float sink = smoothstep(-1.0, -0.5, p.y);
+
+  vec3 colour;
+  if (light) {
+    vec3 body = mix(bg, vec3(1.0), 0.45) * (0.9 + 0.1 * n.y);
+    colour = mix(body, env, rim * 0.65) + inner * depth * 0.06 + box * 0.28 + kick * magenta * 0.1;
+    colour = mix(mix(bg, fg, 0.05), colour, 0.6 + 0.4 * sink);
+  } else {
+    vec3 body = bg * 0.45 + inner * depth * 0.16;
+    colour = body + (env * rim * 1.25 + box * mix(vec3(1.0), blue, 0.4) * 0.5 + kick * magenta * 0.35) * (0.4 + 0.6 * sink);
+  }
+  edge = !hit || facing < 0.35;
+  return vec4(min(colour, 1.0), 1.0) * cover + behind * (1.0 - cover);
+}
+
+void main() {
+  float t = frame.z;
+  bool light = frame.w > 0.5;
+  vec2 size = frame.xy;
+  vec2 position = gl_FragCoord.xy;
+  float unit = min(size.y * 0.5, size.x / 2.7) / 1.22;
+  // gl_FragCoord counts up from the bottom already: the canvas's bottom at y = -1.
+  vec2 uv = vec2(position.x - size.x * 0.5, position.y) / unit - vec2(0.0, 1.0);
+
+  float near = map(vec3(uv, 0.0), t);
+  float glow = exp(-max(near, 0.0) * 2.6) * (light ? 0.2 : 0.32);
+  vec3 tint = mix(blue, magenta, 0.5 + 0.5 * sin(uv.x * 1.3 + t * 0.4));
+  vec4 behind = vec4(tint * glow, glow);
+  if (!light) {
+    vec2 cell = floor(position / 22.0);
+    float h = hash(cell);
+    if (h > 0.94) {
+      vec2 spot = (cell + 0.25 + 0.5 * vec2(hash(cell + 3.1), hash(cell + 7.7))) * 22.0;
+      float twinkle = 0.55 + 0.45 * sin(t * (0.8 + h) + h * 40.0);
+      float speck = smoothstep(1.3, 0.0, length(position - spot)) * 0.4 * twinkle;
+      behind += vec4(fg * speck, speck) * (1.0 - behind.a);
+    }
+  }
+  if (uv.y > 0.6) { gl_FragColor = behind; return; }
+
+  bool edge;
+  vec4 colour = trace(uv, unit, behind, edge);
+  if (edge) {
+    bool ignored;
+    float q = 0.25 / unit;
+    colour += trace(uv + vec2(q, q * 0.5), unit, behind, ignored);
+    colour += trace(uv + vec2(-q * 0.5, q), unit, behind, ignored);
+    colour += trace(uv + vec2(-q, -q * 0.5), unit, behind, ignored);
+    colour *= 0.25;
+  }
+  float noise = (fract(sin(dot(position, vec2(12.9898, 78.233))) * 43758.5453) - 0.5) / 255.0;
+  gl_FragColor = vec4(colour.rgb, max(colour.a + noise, 0.0));
+}`;
+
+  // Gruvbox Dark Hard, as the app picks them: palette 12 and 13, eased toward the text.
+  const rgb = (hex) => [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16) / 255);
+  const mixRGB = (a, b, t) => a.map((x, i) => x + (b[i] - x) * t);
+  const LIQUID = (() => {
+    const bg = rgb("#1d2021"), fg = rgb("#ebdbb2");
+    return { bg, fg, blue: mixRGB(rgb("#83a598"), fg, 0.2), magenta: mixRGB(rgb("#d3869b"), fg, 0.15) };
+  })();
+
+  const liquid = (canvas) => {
+    const gl = canvas.getContext("webgl", { premultipliedAlpha: true, antialias: false });
+    if (!gl) return;
+    const shader = (type, src) => {
+      const s = gl.createShader(type);
+      gl.shaderSource(s, src);
+      gl.compileShader(s);
+      return gl.getShaderParameter(s, gl.COMPILE_STATUS) ? s : null;
+    };
+    const vs = shader(gl.VERTEX_SHADER, "attribute vec2 p; void main() { gl_Position = vec4(p, 0.0, 1.0); }");
+    const fs = shader(gl.FRAGMENT_SHADER, LIQUID_FRAG);
+    if (!vs || !fs) return;
+    const program = gl.createProgram();
+    gl.attachShader(program, vs);
+    gl.attachShader(program, fs);
+    gl.linkProgram(program);
+    if (!gl.getProgramParameter(program, gl.LINK_STATUS)) return;
+    gl.useProgram(program);
+    // One triangle over the whole canvas.
+    gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+    const at = gl.getAttribLocation(program, "p");
+    gl.enableVertexAttribArray(at);
+    gl.vertexAttribPointer(at, 2, gl.FLOAT, false, 0, 0);
+    const u = (name) => gl.getUniformLocation(program, name);
+    gl.uniform3fv(u("bg"), LIQUID.bg);
+    gl.uniform3fv(u("fg"), LIQUID.fg);
+    gl.uniform3fv(u("blue"), LIQUID.blue);
+    gl.uniform3fv(u("magenta"), LIQUID.magenta);
+    const frameAt = u("frame"), turnAt = u("turn");
+    canvas.classList.add("on");
+
+    // Toward the pointer, by at most a little, and softly.
+    const turn = [0, 0], target = [0, 0];
+    const host = canvas.parentElement;
+    host.addEventListener("pointermove", (e) => {
+      const r = canvas.getBoundingClientRect();
+      target[0] = ((e.clientX - r.left) / r.width - 0.5) * 2;
+      target[1] = ((e.clientY - r.top) / r.height - 0.5) * 2;
+    });
+    host.addEventListener("pointerleave", () => { target[0] = target[1] = 0; });
+
+    // Retina pixels, up to 1.5 a CSS pixel: one a point (as in the app) shows
+    // steps on the outline once the browser scales it up.
+    const scale = Math.min(devicePixelRatio || 1, 1.5);
+    const fit = () => {
+      const w = Math.max(1, Math.round(canvas.clientWidth * scale)), h = Math.max(1, Math.round(canvas.clientHeight * scale));
+      if (canvas.width !== w || canvas.height !== h) { canvas.width = w; canvas.height = h; gl.viewport(0, 0, w, h); }
+    };
+    const start = performance.now();
+    const draw = (now) => {
+      fit();
+      turn[0] += (target[0] - turn[0]) * 0.06;
+      turn[1] += (target[1] - turn[1]) * 0.06;
+      gl.uniform4f(frameAt, canvas.width, canvas.height, reduced ? 4 : (now - start) / 1000, 0);
+      gl.uniform4f(turnAt, turn[0], turn[1], 0, 0);
+      gl.drawArrays(gl.TRIANGLES, 0, 3);
+    };
+
+    if (reduced) {
+      // Still: one frame, again when the size changes.
+      draw(0);
+      new ResizeObserver(() => draw(0)).observe(canvas);
+      return;
+    }
+    // A first frame at once, then the loop: the motion is slow, thirty frames
+    // a second, and none while it's off screen.
+    draw(start);
+    let visible = false, frameId = 0, last = 0;
+    const loop = (now) => {
+      frameId = requestAnimationFrame(loop);
+      if (now - last < 32) return;
+      last = now;
+      draw(now);
+    };
+    new IntersectionObserver(([entry]) => {
+      visible = entry.isIntersecting;
+      cancelAnimationFrame(frameId);
+      if (visible) frameId = requestAnimationFrame(loop);
+    }).observe(canvas);
+  };
+  $$("canvas[data-liquid]").forEach(liquid);
 
   // ---- Actions explorer.
   const P = "pomodoro ❯";
@@ -244,7 +435,7 @@
       "cursor-style": "until a program asks for another",
       "tab-position": "a row across the top, or a column down the left",
       "reading-width": "characters a line of a Claude reply holds at most",
-      "agent-background": "what a new Claude session is drawn over",
+      "agent-background": "what a new Claude session is drawn over: liquid, a picture, or none",
       "file-links": "a path clicked in a shell or a reply opens here",
       editor: "for file-links = editor, and ⌘,",
       "remote-control": "titan do from shells and agents; true keeps agents to their own panes",
@@ -284,7 +475,7 @@
       add("tab-position", value("tab-position"), value("tab-position") === "top");
       section("claude pane");
       add("reading-width", value("reading-width"), value("reading-width") === "95");
-      add("agent-background", value("agent-background"), value("agent-background") === "generated");
+      add("agent-background", value("agent-background"), value("agent-background") === "liquid");
       add("file-links", value("file-links"), value("file-links") === "viewer");
       add("editor", value("editor"));
       section("agents");
