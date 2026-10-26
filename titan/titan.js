@@ -266,6 +266,43 @@ void main() {
   };
   $$("canvas[data-liquid]").forEach(liquid);
 
+  // ---- Benji (BenjiCharacter in the app): he looks about, slow turns now one
+  // way, now the other, with a nod between; while the pointer moves he turns
+  // his visor to it, and goes back to looking about once it has been still a
+  // while. CSS floats him, blinks him and drifts his rim's colours.
+  $$("[data-benji]").forEach((benji) => {
+    if (reduced) return;
+    const pointer = { x: 0, y: 0, at: -1e9 };
+    addEventListener("pointermove", (e) => { pointer.x = e.clientX; pointer.y = e.clientY; pointer.at = performance.now(); }, { passive: true });
+    const gaze = { yaw: 0, pitch: 0 };
+    const clamp = (v) => Math.max(-1, Math.min(1, v));
+    let frameId = 0;
+    const frame = (now) => {
+      frameId = requestAnimationFrame(frame);
+      const t = now / 1000;
+      const s = benji.offsetWidth;
+      let yaw = 22 * Math.sin(t * 0.55) + 7 * Math.sin(t * 1.31);
+      let pitch = 7 * Math.sin(t * 0.83 + 1);
+      if (now - pointer.at < 2500) {
+        const r = benji.getBoundingClientRect();
+        yaw = clamp((pointer.x - (r.left + r.width / 2)) / (s * 4)) * 35;
+        pitch = clamp((pointer.y - (r.top + r.height / 2)) / (s * 4)) * 25;
+      }
+      gaze.yaw += (yaw - gaze.yaw) * 0.1;
+      gaze.pitch += (pitch - gaze.pitch) * 0.1;
+      const rad = Math.PI / 180;
+      benji.style.setProperty("--yaw", `${gaze.yaw}deg`);
+      benji.style.setProperty("--pitch", `${gaze.pitch}deg`);
+      benji.style.setProperty("--roll", `${4 * Math.sin(t * 0.7)}deg`);
+      benji.style.setProperty("--dx", `${Math.sin(gaze.yaw * rad) * s * 0.2}px`);
+      benji.style.setProperty("--dy", `${Math.sin(gaze.pitch * rad) * s * 0.2}px`);
+    };
+    new IntersectionObserver(([entry]) => {
+      cancelAnimationFrame(frameId);
+      if (entry.isIntersecting) frameId = requestAnimationFrame(frame);
+    }).observe(benji);
+  });
+
   // ---- Actions explorer.
   const P = "pomodoro ❯";
   const id = "9F99C1B4-01A3-4A11-852E-D11F3F19AF8E";
@@ -435,6 +472,7 @@ void main() {
       "cursor-style": "until a program asks for another",
       "tab-position": "a row across the top, or a column down the left",
       "reading-width": "characters a line of a Claude reply holds at most",
+      "compact-ahead": "percent of the context at which a copy is compacted in the background; 0 leaves it to Claude Code",
       "agent-background": "what a new Claude session is drawn over: liquid, a picture, or none",
       "file-links": "a path clicked in a shell or a reply opens here",
       editor: "for file-links = editor, and ⌘,",
@@ -475,6 +513,7 @@ void main() {
       add("tab-position", value("tab-position"), value("tab-position") === "top");
       section("claude pane");
       add("reading-width", value("reading-width"), value("reading-width") === "95");
+      add("compact-ahead", value("compact-ahead"), value("compact-ahead") === "60");
       add("agent-background", value("agent-background"), value("agent-background") === "liquid");
       add("file-links", value("file-links"), value("file-links") === "viewer");
       add("editor", value("editor"));

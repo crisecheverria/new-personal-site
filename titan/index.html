@@ -14,7 +14,7 @@
   <link rel="icon" type="image/png" href="icon.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="titan.css?v=12" />
+  <link rel="stylesheet" href="titan.css?v=15" />
 </head>
 <body class="landing">
   <header class="nav">
@@ -100,27 +100,70 @@
     </section>
 
     <section class="feature">
-      <p class="eyebrow"><span>07</span> actions</p>
+      <p class="eyebrow"><span>07</span> fork &amp; handoff</p>
+      <h2>Branch it. Hand it off.</h2>
+      <p><code>/fork</code> tries another approach while the conversation carries on. <code>/handoff</code> starts fresh with only what the goal needs.</p>
+      <div class="term lineage">
+        <div class="term-bar"><span></span><span></span><span></span><em>sessions · ~/code/pomodoro</em></div>
+<pre><span class="s-done">●</span> <span class="r">Fix the timer drift</span>  <span class="m">· context 71%</span>
+<span class="m">├─</span> <span class="e">⑂ /fork</span> <span class="r">try it with requestAnimationFrame</span>
+<span class="m">│    the same history, a branch of its own</span>
+<span class="m">└─</span> <span class="p">→ /handoff</span> <span class="r">ship the fix and a test</span>
+<span class="m">     a fresh session, the brief in its composer</span>
+
+<span class="m">↳ Handed off from “Fix the timer drift”</span></pre>
+      </div>
+      <p class="small">Past 60% of the context, Titan compacts a copy in the background and moves the session onto it at its next pause.</p>
+    </section>
+
+    <section class="feature">
+      <p class="eyebrow"><span>08</span> actions</p>
       <h2>Every command is an action.</h2>
       <p>Bind it to a key, run it with <code>titan do</code>, or let an agent run it.</p>
       <figure class="frame"><video data-autoplay muted loop playsinline preload="none" poster="cli-poster.webp?v=2" src="cli.mp4?v=2" aria-label="titan do opens a split, titan browser loads the page and clicks Start, titan panes lists what is open"></video></figure>
     </section>
 
     <section class="feature">
-      <p class="eyebrow"><span>08</span> themes</p>
+      <p class="eyebrow"><span>09</span> themes</p>
       <h2>Your theme, everywhere.</h2>
       <p>Titan reads your Ghostty config. Change the theme and everything follows.</p>
       <figure class="frame"><video data-autoplay muted loop playsinline preload="none" poster="welcome-poster.webp?v=2" src="welcome.mp4?v=2" aria-label="A new session draws Titan's infinity in the theme's colours as the theme switches between light and dark"></video></figure>
     </section>
 
     <section class="feature">
-      <p class="eyebrow"><span>09</span> terminal</p>
+      <p class="eyebrow"><span>10</span> terminal</p>
       <h2>And underneath, a real terminal.</h2>
       <ul class="facts">
         <li><b>libghostty inside</b><span>Ghostty's VT core, drawn with Metal.</span></li>
         <li><b>Sessions outlive the window</b><span>Quit or update; they keep running.</span></li>
         <li><b>No API key</b><span>Uses the Claude Code you're signed into.</span></li>
       </ul>
+    </section>
+
+    <!-- Benji, coming soon: drawn as the app draws him (BenjiWindow.swift). -->
+    <section class="feature soon" id="benji">
+      <p class="eyebrow"><i class="pulse"></i> coming soon</p>
+      <div class="benji" data-benji style="--s: 132px" role="img" aria-label="Benji, a white ball with a glass visor and two big eyes">
+        <div class="benji-shadow"></div>
+        <div class="benji-body">
+          <div class="benji-shell"></div>
+          <div class="benji-visor">
+            <div class="benji-rim"></div>
+            <div class="benji-glass"></div>
+            <div class="benji-eyes"><i></i><i></i></div>
+            <div class="benji-gleam"></div>
+          </div>
+        </div>
+      </div>
+      <h2>Meet Benji.</h2>
+      <p>Your assistant in Titan. Ask in plain words, and Benji starts Claude sessions in your projects, hands them the work, checks on them and tells you how it went.</p>
+      <div class="benji-chat" aria-label="A conversation with Benji">
+        <p class="you">Fix the flaky test in pomodoro, and tidy the README in notas.</p>
+        <p class="him">On it: two sessions, one for each.</p>
+        <p class="steps"><span class="s-working">▶</span> pomodoro · fixing the flaky test<br /><span class="s-done">●</span> notas · README tidied</p>
+        <p class="him">Both done. The test raced the timer; it waits for it now. The README lost two stale sections.</p>
+      </div>
+      <p class="meta"><kbd>⌃/</kbd> opens him, in the next release. <a href="https://github.com/crisecheverria/titan-releases/releases">Watch the releases →</a></p>
     </section>
 
     <section class="closing">
@@ -140,6 +183,6 @@
   </footer>
 
   <div class="lightbox" data-lightbox hidden><img alt="" /></div>
-  <script src="titan.js?v=10"></script>
+  <script src="titan.js?v=12"></script>
 </body>
 </html>

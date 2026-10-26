@@ -9,7 +9,7 @@
   <link rel="icon" type="image/png" href="../icon.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../titan.css?v=12" />
+  <link rel="stylesheet" href="../titan.css?v=15" />
 </head>
 <body class="docs">
   <header class="nav">
@@ -29,7 +29,9 @@
         <span class="toc-group">Use</span>
         <a href="#agents">Agents</a>
         <a href="#claude">The Claude pane</a>
+        <a href="#fork">Fork &amp; handoff</a>
         <a href="#terminal">The terminal</a>
+        <a href="#benji">Benji <span class="tag">soon</span></a>
         <span class="toc-group">Reference</span>
         <a href="#actions">Actions</a>
         <a href="#safety">Pane limits</a>
@@ -197,6 +199,23 @@ titan browser and click Break.</span>
         </figure>
       </section>
 
+      <section id="fork">
+        <h2>Fork &amp; handoff</h2>
+        <p class="lead">Two ways to take a conversation somewhere new without losing the one you're in. Each new session opens with a line back to where it came from: <em>Forked from “…”</em> or <em>Handed off from “…”</em>. Click it to bring the parent forward, or resume it if it's closed.</p>
+        <dl class="ref">
+          <dt><code>/fork [note]</code></dt>
+          <dd>Opens a new session with this one's whole history, as a conversation of its own, so it can try another approach while the parent carries on unchanged. The note, if you give one, waits in its composer.</dd>
+          <dt>Fork from Here</dt>
+          <dd>On any reply in the feed: a new session with the history up to that reply, for going back to a point before things went sideways.</dd>
+          <dt><code>/handoff [goal]</code></dt>
+          <dd>The session writes the opening message for a fresh one with only what matters for the goal: decisions, where the work stands, files, what failed, next steps. It opens in a new tab with the same folder, worktree, account, model, effort and permission mode, the message in its composer to edit before sending, plus a pointer to the old transcript for anything left out.</dd>
+          <dt>Compact ahead</dt>
+          <dd>When a turn ends past <code>compact-ahead</code> percent of the context window (60 by default; Settings › While it works), a copy of the conversation is compacted in the background while you keep working, and the session moves onto it at its next pause. The context ring pulses while it runs. <code>compact-ahead = 0</code> leaves compacting to Claude Code.</dd>
+          <dt>Export as Markdown</dt>
+          <dd><strong>Export Conversation as Markdown…</strong> and <strong>Copy Conversation as Markdown</strong> in the palette: prompts and replies in full, each tool call one line, no tool output.</dd>
+        </dl>
+      </section>
+
       <section id="terminal">
         <h2>The terminal</h2>
         <dl class="ref">
@@ -214,6 +233,27 @@ titan browser and click Break.</span>
           <dd>A dev server an agent backgrounded, a <code>nohup</code> from a pane you closed: <strong>Running in Background</strong> finds them, with their ports, and stops them.</dd>
           <dt>More than one Claude account</dt>
           <dd>Map folders to Claude accounts and each session opens under the right one, its history kept apart. Continue a session under the other account in one click.</dd>
+        </dl>
+      </section>
+
+      <section id="benji">
+        <div class="soon-head">
+          <div class="benji" data-benji style="--s: 64px" role="img" aria-label="Benji"><div class="benji-shadow"></div><div class="benji-body"><div class="benji-shell"></div><div class="benji-visor"><div class="benji-rim"></div><div class="benji-glass"></div><div class="benji-eyes"><i></i><i></i></div><div class="benji-gleam"></div></div></div></div>
+          <div>
+            <h2>Benji <span class="tag">coming soon</span></h2>
+            <p class="small">In the next release.</p>
+          </div>
+        </div>
+        <p class="lead">Titan's assistant: a Claude conversation in a window of its own, opened with <kbd>⌃/</kbd>, View → Benji, or the little Benji in the tab bar.</p>
+        <dl class="ref">
+          <dt>Runs sessions for you</dt>
+          <dd>Starts Claude sessions in your projects, each in a tab of its own, gives them tasks and more instructions, reads what they did, stops them, and reports back; several at once when a request splits.</dd>
+          <dt>Knows Titan</dt>
+          <dd>Answers how-to questions from Titan's manual and changelog, and runs Titan's commands for you. It needs no <code>remote-control</code>.</dd>
+          <dt>A map of the work</dt>
+          <dd>Above the conversation, folders and sessions as linked nodes, signals running to those at work, the ones waiting on you in red.</dd>
+          <dt>Conversations of its own</dt>
+          <dd>Each named in a few words, kept between launches, archived once inactive for 72 hours. On Haiku, so it's quick.</dd>
         </dl>
       </section>
 
@@ -319,6 +359,7 @@ titan browser and click Break.</span>
               <label>reading-width <span class="out" data-out="reading-width">95</span>
                 <input name="reading-width" type="range" min="60" max="140" value="95" />
               </label>
+              <label>compact-ahead <input name="compact-ahead" type="number" min="0" max="95" value="60" /></label>
               <label>agent-background
                 <select name="agent-background"><option>liquid</option><option>generated</option><option>none</option></select>
               </label>
@@ -393,6 +434,6 @@ titan browser and click Break.</span>
   </footer>
 
   <div class="lightbox" data-lightbox hidden><img alt="" /></div>
-  <script src="../titan.js?v=10"></script>
+  <script src="../titan.js?v=12"></script>
 </body>
 </html>
