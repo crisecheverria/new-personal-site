@@ -187,9 +187,11 @@ titan browser and click Break.</span>
           <dt>Model, effort, context</dt>
           <dd>A model picker, an effort slider and a ring for how full the context window is. Permission modes run from asking every time to YOLO.</dd>
           <dt>@ and /</dt>
-          <dd><code>@</code> fuzzy-finds files to mention. <code>/</code> lists the commands and skills installed for that session, with their descriptions.</dd>
+          <dd><code>@</code> fuzzy-finds files to mention. <code>/</code> lists the commands and skills installed for that session, with their descriptions. <code>/plugin install name@marketplace</code> (or <code>uninstall</code>, <code>enable</code>, <code>disable</code>) changes Claude Code's plugins and reloads them in the same conversation; <code>/plugin</code> alone lists them.</dd>
           <dt>Attach anything</dt>
           <dd>Paste or drop images and files into a conversation, or drop them on a tab: a Claude session attaches them, a shell types their paths.</dd>
+          <dt>Dictate</dt>
+          <dd>With <a href="https://github.com/anomalyco/hex">Hex</a> installed, a microphone sits beside the send button: click and speak, click again and the words go into the box, not sent.</dd>
           <dt>Know which session needs you</dt>
           <dd>Tabs show whether their sessions are working, done or waiting on you. <kbd>⌘J</kbd> jumps to the one that's waiting; hover a tab to see what each session is doing.</dd>
         </dl>
@@ -225,6 +227,8 @@ titan browser and click Break.</span>
           <dd>Shells and Claude sessions run in <code>titan-ptyd</code>, a small daemon, so quitting or updating Titan doesn't stop them. Reopen it and they're where you left them.</dd>
           <dt>Tabs and splits</dt>
           <dd><kbd>⌘D</kbd> and <kbd>⇧⌘D</kbd> split, <kbd>⇧⌘↩</kbd> expands a pane, and a grip shows on the divider as you drag it. Drag panes onto tabs, tabs out into windows. <kbd>⌘E</kbd> shows every tab and its panes.</dd>
+          <dt>Float a pane</dt>
+          <dd>The float button in a pane's header, or <strong>Float Pane</strong> in the palette, lifts it into a card over its window: drag its header to move it, its edges to resize it. <strong>–</strong> shrinks it to a pill in the bottom right corner, with a dot while Claude works or waits on you; click to open it again. Its session keeps running, and <strong>Put Pane Back</strong> returns it to its tab.</dd>
           <dt>Recipes</dt>
           <dd>Saved setups of shells and a browser in the config. They ask for what they need, a branch or a port, then open everything beside the pane you're in.</dd>
           <dt>Images in the shell</dt>
@@ -250,8 +254,6 @@ titan browser and click Break.</span>
           <dd>Starts Claude sessions in your projects, each in a tab of its own, gives them tasks and more instructions, reads what they did, stops them, and reports back; several at once when a request splits.</dd>
           <dt>Knows Titan</dt>
           <dd>Answers how-to questions from Titan's manual and changelog, and runs Titan's commands for you. It needs no <code>remote-control</code>.</dd>
-          <dt>A map of the work</dt>
-          <dd>Above the conversation, folders and sessions as linked nodes, signals running to those at work, the ones waiting on you in red.</dd>
           <dt>Conversations of its own</dt>
           <dd>Each named in a few words, kept between launches, archived once inactive for 72 hours. On Haiku, so it's quick.</dd>
         </dl>
