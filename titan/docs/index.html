@@ -31,7 +31,8 @@
         <a href="#claude">The Claude pane</a>
         <a href="#fork">Fork &amp; handoff</a>
         <a href="#terminal">The terminal</a>
-        <a href="#benji">Benji <span class="tag">new</span></a>
+        <a href="#benji">Benji</a>
+        <a href="#profiles">Profiles <span class="tag">new</span></a>
         <span class="toc-group">Reference</span>
         <a href="#actions">Actions</a>
         <a href="#safety">Pane limits</a>
@@ -177,7 +178,9 @@ titan browser and click Break.</span>
           <dt>Run what it suggests</dt>
           <dd>Shell code blocks in a reply get <strong>Run</strong>, <strong>Run in a shell</strong> and <strong>Copy</strong>. Output streams in under the block. Nothing runs without the click.</dd>
           <dt>See what changed</dt>
-          <dd><code>/diff</code> and <code>/git</code> open a side pane with every file changed since the session started, plus git status, recent commits and stashes.</dd>
+          <dd><code>/diff</code> opens the git status beside the conversation: the uncommitted changes, recent commits and stashes. The <strong>+/−</strong> chip above the input counts the uncommitted lines, and empties once they're committed.</dd>
+          <dt>Claude's questions, as a form</dt>
+          <dd>When Claude or a skill asks you something, the card shows each question with its options to pick, one or several, and <strong>Other</strong> for an answer of your own. <strong>Answer</strong> sends them back.</dd>
           <dt>Every path is a link</dt>
           <dd>File paths and URLs in the feed are clickable. A file opens beside the pane at its line, in a built-in viewer or your <code>$EDITOR</code>.</dd>
           <dt>Pages and diagrams, live</dt>
@@ -189,7 +192,7 @@ titan browser and click Break.</span>
           <dt>@ and /</dt>
           <dd><code>@</code> fuzzy-finds files to mention. <code>/</code> lists the commands and skills installed for that session, with their descriptions. <code>/plugin install name@marketplace</code> (or <code>uninstall</code>, <code>enable</code>, <code>disable</code>) changes Claude Code's plugins and reloads them in the same conversation; <code>/plugin</code> alone lists them.</dd>
           <dt>Attach anything</dt>
-          <dd>Paste or drop images and files into a conversation, or drop them on a tab: a Claude session attaches them, a shell types their paths.</dd>
+          <dd>Paste or drop images and files into a conversation, drop them on a tab, or pick them with the <strong>📎</strong> button beside the input: a Claude session attaches them, images as images, and a shell types their paths.</dd>
           <dt>Dictate</dt>
           <dd>With <a href="https://github.com/anomalyco/hex">Hex</a> installed, a microphone sits beside the send button: click and speak, click again and the words go into the box, not sent.</dd>
           <dt>Know which session needs you</dt>
@@ -244,7 +247,7 @@ titan browser and click Break.</span>
         <div class="soon-head">
           <div class="benji" data-benji style="--s: 64px" role="img" aria-label="Benji"><div class="benji-shadow"></div><div class="benji-body"><div class="benji-shell"></div><div class="benji-visor"><div class="benji-rim"></div><div class="benji-glass"></div><div class="benji-eyes"><i></i><i></i></div><div class="benji-gleam"></div></div></div></div>
           <div>
-            <h2>Benji <span class="tag">new</span></h2>
+            <h2>Benji</h2>
             <p class="small">New in 0.12.</p>
           </div>
         </div>
@@ -255,8 +258,39 @@ titan browser and click Break.</span>
           <dt>Knows Titan</dt>
           <dd>Answers how-to questions from Titan's manual and changelog, and runs Titan's commands for you. It needs no <code>remote-control</code>.</dd>
           <dt>Conversations of its own</dt>
-          <dd>Each named in a few words, kept between launches, archived once inactive for 72 hours. On Haiku, so it's quick.</dd>
+          <dd>Each named in a few words, kept between launches, archived once inactive for 72 hours.</dd>
+          <dt>Its account and model</dt>
+          <dd>Settings › Claude Pane › Benji picks the Claude account it runs as (the first <code>claude-account</code> unless you choose) and its model: Haiku by default, so it's quick, or Sonnet or Opus. Or <code>benji-account</code> and <code>benji-model</code> in the config. A conversation stays on the account it began on. <span class="small">New in 0.15.</span></dd>
         </dl>
+      </section>
+
+      <section id="profiles">
+        <h2>Profiles <span class="tag">new</span></h2>
+        <p class="small">New in 0.15.</p>
+        <p class="lead">A profile is a set of settings laid over your config while it's on. Turning it off puts everything back as it was: your config itself is never rewritten.</p>
+        <dl class="ref">
+          <dt>Switch one on</dt>
+          <dd>The Profile row at the top of Settings (the one on is highlighted), View › Profile, or <strong>Switch Profile</strong> in the palette. <strong>None</strong> turns it off. The config gets one line, <code>profile = Presenting</code>.</dd>
+          <dt>Titan's five</dt>
+          <dd><strong>Minimal</strong>, a plain terminal. <strong>Agent-heavy</strong>, several sessions at once with their status down the left and the Mac kept awake. <strong>Keyboard-first</strong>, files in your editor and a block cursor. <strong>Presenting</strong>, larger text and strong contrast for a demo or a shared screen. <strong>Focus</strong>, no animations or long-command notifications.</dd>
+          <dt>Your own</dt>
+          <dd><strong>New</strong> asks for a name, then writes <code>~/.config/titan/profiles/&lt;Name&gt;.conf</code> listing every setting a profile can have, commented out with the value you have now, opens it in your editor and turns it on. Take the <code>#</code> off the lines you want and change them: each shows as you save. <strong>Edit File</strong> opens any profile's file, Titan's included; <strong>Reset to Titan's</strong> undoes your changes to one of those.</dd>
+          <dt>Changing one while it's on</dt>
+          <dd>Settings it sets say so in their rows, and changing one there saves it to the profile, where it takes effect.</dd>
+          <dt>What a profile can't set</dt>
+          <dd>Remote control, what the iPhone may do, Claude accounts, hosts, recipes and keybinds stay as your config has them, whichever profile is on.</dd>
+        </dl>
+        <div class="term">
+          <div class="term-bar"><span></span><span></span><span></span><em>~/.config/titan/profiles/Pairing.conf</em></div>
+          <pre class="code"># Big and clear for pairing or a call
+theme = TokyoNight Day
+font-size = 20
+adjust-cell-height = 12%
+minimum-contrast = 4.5
+reading-width = 72
+notify-after = 0
+agent-background = none</pre>
+        </div>
       </section>
 
       <!-- titan actions: one action, three ways to run it. -->
@@ -316,7 +350,9 @@ titan browser and click Break.</span>
 
         <dl class="ref">
           <dt>Its own browser, and only that</dt>
-          <dd>An agent drives the browser pane beside the pane it runs in, not another conversation's. Agents' browser panes keep cookies apart from yours, so an agent never browses signed in as you.</dd>
+          <dd>An agent drives the browser pane beside the pane it runs in, not another conversation's.</dd>
+          <dt>Never signed in</dt>
+          <dd>Titan's browser doesn't sign in to anything but a local server. Sign-in pages (Google, Microsoft, Okta, <code>/login</code> and OAuth pages) open in your default browser, and so does a page asking for a password. Cookies and storage are kept in memory and gone when Titan quits, so neither Titan nor an agent driving a pane ever holds your passwords or a signed-in session.</dd>
           <dt>Known by where it started</dt>
           <dd>Titan reads which pane an agent belongs to from the agent's own process, not from what a request claims, so pointing <code>TITAN_PANE</code> at another pane gains nothing.</dd>
           <dt>A log of what it did</dt>
@@ -327,7 +363,7 @@ titan browser and click Break.</span>
       <!-- Config builder. -->
       <section id="config">
         <h2>Config</h2>
-        <p class="lead">Same syntax as Ghostty's: <code>key = value</code>, one per line. Anything you leave out keeps its default. Build a starting file here and copy it into <code>~/.config/titan/config</code>.</p>
+        <p class="lead">Same syntax as Ghostty's: <code>key = value</code>, one per line. Anything you leave out keeps its default. Build a starting file here and copy it into <code>~/.config/titan/config</code>. To switch several settings at once, use a <a href="#profiles">profile</a>.</p>
 
         <div class="builder" data-builder>
           <form class="builder-form" autocomplete="off">
