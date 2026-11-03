@@ -32,7 +32,8 @@
         <a href="#fork">Fork &amp; handoff</a>
         <a href="#terminal">The terminal</a>
         <a href="#benji">Benji</a>
-        <a href="#profiles">Profiles <span class="tag">new</span></a>
+        <a href="#worktrees">Worktrees <span class="tag">new</span></a>
+        <a href="#profiles">Profiles</a>
         <span class="toc-group">Reference</span>
         <a href="#actions">Actions</a>
         <a href="#safety">Pane limits</a>
@@ -186,9 +187,11 @@ titan browser and click Break.</span>
           <dt>Pages and diagrams, live</dt>
           <dd>HTML and SVG files Claude writes show up in the conversation as live pages. A <code>mermaid</code> block is drawn as a diagram, in the theme's colours.</dd>
           <dt>A worktree each</dt>
-          <dd><kbd>⇧⌘N</kbd> starts a session in a git worktree of its own, so two sessions can work on one repository without stepping on each other.</dd>
+          <dd><kbd>⇧⌘N</kbd> starts a session in a git worktree of its own, on a new or existing branch, so two sessions can work on one repository without stepping on each other. Closing the session removes the worktree, asking first if that would lose uncommitted changes; the branch stays. See <a href="#worktrees">Worktrees</a>.</dd>
           <dt>Model, effort, context</dt>
           <dd>A model picker, an effort slider and a ring for how full the context window is. Permission modes run from asking every time to YOLO.</dd>
+          <dt>Your plan's usage</dt>
+          <dd><code>/cost</code> or <code>/usage</code> draws your plan's usage as a card: a bar each for the session, the week and usage credits, when each resets, and what used it. A small ring beside the context ring shows the same live, amber from 80% and red from 95%; click it for both limits. On an account whose answer leaves the limits out, like an organisation's, <strong>Show in Claude Code</strong> opens Claude Code's own usage screen beside the pane. <span class="small">New in 0.16.</span></dd>
           <dt>@ and /</dt>
           <dd><code>@</code> fuzzy-finds files to mention. <code>/</code> lists the commands and skills installed for that session, with their descriptions. <code>/plugin install name@marketplace</code> (or <code>uninstall</code>, <code>enable</code>, <code>disable</code>) changes Claude Code's plugins and reloads them in the same conversation; <code>/plugin</code> alone lists them.</dd>
           <dt>Attach anything</dt>
@@ -264,8 +267,34 @@ titan browser and click Break.</span>
         </dl>
       </section>
 
+      <section id="worktrees">
+        <h2>Worktrees <span class="tag">new</span></h2>
+        <p class="small">.worktreeinclude is new in 0.16.</p>
+        <p class="lead">A git worktree is a second working folder of the same repository, on a branch of its own. With agents it lets two sessions, or you and a session, change one repository at the same time without mixing each other's edits, tests or commits.</p>
+        <dl class="ref">
+          <dt>Start one</dt>
+          <dd><kbd>⇧⌘N</kbd>, then type a new branch name (made from the remote's default branch) or pick an existing branch. Claude starts in <code>&lt;repo&gt;.worktrees/&lt;branch&gt;</code>, beside the repository. Review and merge its branch when it's done, like a teammate's.</dd>
+          <dt>What a worktree is missing</dt>
+          <dd>Only what git tracks. What the repository ignores, like <code>.env</code>, <code>node_modules</code> or built libraries, isn't there, so the project often won't run in a new worktree.</dd>
+          <dt><code>.worktreeinclude</code></dt>
+          <dd>List those paths in a <code>.worktreeinclude</code> file at the top of the repository, one per line, and every new worktree brings them in from the main checkout. A folder is linked (shared, instant, no extra space), a file copied (the worktree's own). Write <code>link</code> or <code>copy</code> before a path to choose. The session's feed says what came in. Commit the file for your team, or keep it out of git just for you.</dd>
+          <dt>Or in the config</dt>
+          <dd>For a repository you'd rather not add a file to: <code>worktree-include = ~/code/app: .env, node_modules</code>.</dd>
+          <dt>Kept safe</dt>
+          <dd>Only paths inside the repository that git ignores are brought in: nothing with <code>..</code>, <code>~</code> or <code>.git</code>, and no link that leads outside it. Links are added to git's exclude list, so they never show in <code>git status</code> or get committed, and closing the session removes the links, never what they point to.</dd>
+        </dl>
+        <div class="term">
+          <div class="term-bar"><span></span><span></span><span></span><em>.worktreeinclude</em></div>
+          <pre class="code"># What git ignores that a worktree needs
+.env
+.env.local
+node_modules
+copy build</pre>
+        </div>
+      </section>
+
       <section id="profiles">
-        <h2>Profiles <span class="tag">new</span></h2>
+        <h2>Profiles</h2>
         <p class="small">New in 0.15.</p>
         <p class="lead">A profile is a set of settings laid over your config while it's on. Turning it off puts everything back as it was: your config itself is never rewritten.</p>
         <dl class="ref">
