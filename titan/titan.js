@@ -577,7 +577,7 @@ void main() {
     ["New Claude session", "⌘N"], ["New Claude session on a branch (worktree)", "⇧⌘N"], ["New tab", "⌘T"], ["New browser pane", "⇧⌘B"],
     ["Open location", "⌘L"], ["Web Inspector in a browser pane", "⇧⌘I"], ["Split right", "⌘D"], ["Split down", "⇧⌘D"], ["Expand or collapse pane", "⇧⌘↩"],
     ["Next pane / previous pane", "⌘] ⌘["], ["Close pane", "⌘W"], ["Close tab", "⌥⌘W"], ["Close window", "⇧⌘W"],
-    ["Next tab / previous tab", "⇧⌘] ⇧⌘["], ["Tab 1–8 / last tab", "⌘1–⌘8 ⌘9"], ["Command palette", "⌘P"],
+    ["Next tab / previous tab", "⇧⌘] ⇧⌘["], ["Tab 1–8 / last tab", "⌘1–⌘8 ⌘9"], ["Command palette", "⌘P"], ["Keyboard shortcuts", "⌘/"],
     ["Show all tabs", "⌘E"], ["Go to waiting session", "⌘J"], ["Bigger / smaller / default text", "⌘= ⌘− ⌘0"],
     ["Find / next / previous", "⌘F ⌘G ⇧⌘G"], ["Open config", "⌘,"], ["Send now (Claude pane)", "↩"], ["Queue for after the turn", "⌥↩"],
   ];

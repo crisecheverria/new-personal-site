@@ -192,7 +192,9 @@ titan browser and click Break.</span>
           <dt>A worktree each</dt>
           <dd><kbd>⇧⌘N</kbd> starts a session in a git worktree of its own, on a new or existing branch, so two sessions can work on one repository without stepping on each other. <kbd>⌘N</kbd> offers one when another session is already open in that checkout. See <a href="#worktrees">Worktrees</a>.</dd>
           <dt>Where the work stands</dt>
-          <dd><code>sidebar-status = true</code> adds a card at the foot of the left sidebar for the selected session: its branch, pull request, changes and build, each opening where it says. Builds come from GitHub or a Bitbucket Server, where Jenkins and other CI report, so they need no token of their own. It uses the same logins as <code>/pr</code> and only reads with them.</dd>
+          <dd><code>sidebar-status = true</code> adds a card at the foot of the left sidebar for the selected session: its branch, worktree, pull request and its review, changes and build, each opening where it says. Builds come from GitHub or a Bitbucket Server, where Jenkins and other CI report, so they need no token of their own. It uses the same logins as <code>/pr</code> and only reads with them.</dd>
+          <dt>Ask Claude about a pull request</dt>
+          <dd>The Review pane that <code>/pr</code> opens has an input at its foot: with nothing typed Claude reviews the whole pull request, or ask it something. It works in a session beside the review, asks before doing anything and reports to you; nothing is posted.</dd>
           <dt>Model, effort, context</dt>
           <dd>A model picker, an effort slider and a ring for how full the context window is. Permission modes run from asking every time to YOLO.</dd>
           <dt>Your plan's usage</dt>
@@ -501,7 +503,7 @@ agent-background = none</pre>
 
       <section id="keys">
         <h2>Keys</h2>
-        <p class="lead">The defaults. Every one can be rebound, removed or turned into a sequence with <code>keybind</code>, and the menus show the new key as soon as you save.</p>
+        <p class="lead">The defaults. Every one can be rebound, removed or turned into a sequence with <code>keybind</code>, and the menus show the new key as soon as you save. In Titan, <kbd>⌘/</kbd> lists every key in effect, your own included.</p>
         <input type="search" class="keys-filter" placeholder="filter: split, tab, claude, ⌘E…" aria-label="Filter keys" data-keys-filter />
         <div class="keys" data-keys></div>
       </section>
@@ -536,6 +538,6 @@ agent-background = none</pre>
   </footer>
 
   <div class="lightbox" data-lightbox hidden><img alt="" /></div>
-  <script src="../titan.js?v=14"></script>
+  <script src="../titan.js?v=15"></script>
 </body>
 </html>
