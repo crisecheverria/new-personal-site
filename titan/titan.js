@@ -481,6 +481,7 @@ void main() {
       "keep-awake": "no idle sleep while a Claude session works",
       "links-in-titan": "web links open in a browser pane beside",
       "browser-sign-in": "your own browser panes may sign in; agents' never do",
+      "sidebar-status": "branch, pull request, changes and build at the foot of the sidebar",
       "notify-after": "a command this many seconds long notifies when it ends",
     };
     const PRESETS = {
@@ -525,6 +526,7 @@ void main() {
       add("keep-awake", value("keep-awake"), value("keep-awake"));
       add("links-in-titan", value("links-in-titan"), value("links-in-titan"));
       add("browser-sign-in", value("browser-sign-in"), !value("browser-sign-in"));
+      add("sidebar-status", value("sidebar-status"), !value("sidebar-status"));
       add("notify-after", value("notify-after"), value("notify-after") === "10");
       if (value("x-recipe")) {
         block("recipes: ⌘P → Run Dev server");

@@ -171,7 +171,7 @@ titan browser and click Break.</span>
       <section id="claude">
         <h2>The Claude pane</h2>
         <p class="lead">
-          <kbd>⌘N</kbd> starts a Claude Code session in a folder you pick, drawn as a conversation with an input box of its own.
+          <kbd>⌘N</kbd> starts a Claude Code session in the folder you're working in, drawn as a conversation with an input box of its own. <strong>New Claude Session in Folder…</strong> in the palette asks which folder, and <strong>Change folder…</strong> on the folder chip above the input starts one there in the same pane.
           It runs Claude Code in its structured stream mode, so replies, tool calls and their output arrive as messages instead of a scraped screen.
         </p>
         <dl class="ref">
@@ -191,6 +191,8 @@ titan browser and click Break.</span>
           <dd>HTML and SVG files Claude writes show up in the conversation as live pages. A <code>mermaid</code> block is drawn as a diagram, in the theme's colours.</dd>
           <dt>A worktree each</dt>
           <dd><kbd>⇧⌘N</kbd> starts a session in a git worktree of its own, on a new or existing branch, so two sessions can work on one repository without stepping on each other. <kbd>⌘N</kbd> offers one when another session is already open in that checkout. See <a href="#worktrees">Worktrees</a>.</dd>
+          <dt>Where the work stands</dt>
+          <dd><code>sidebar-status = true</code> adds a card at the foot of the left sidebar for the selected session: its branch, pull request, changes and build, each opening where it says. Builds come from GitHub or a Bitbucket Server, where Jenkins and other CI report, so they need no token of their own. It uses the same logins as <code>/pr</code> and only reads with them.</dd>
           <dt>Model, effort, context</dt>
           <dd>A model picker, an effort slider and a ring for how full the context window is. Permission modes run from asking every time to YOLO.</dd>
           <dt>Your plan's usage</dt>
@@ -475,6 +477,7 @@ agent-background = none</pre>
               <label class="check"><input type="checkbox" name="keep-awake" checked /> keep-awake</label>
               <label class="check"><input type="checkbox" name="links-in-titan" checked /> links-in-titan</label>
               <label class="check"><input type="checkbox" name="browser-sign-in" /> browser-sign-in</label>
+              <label class="check"><input type="checkbox" name="sidebar-status" /> sidebar-status</label>
               <label>notify-after <input name="notify-after" type="number" min="0" max="600" value="10" /></label>
             </fieldset>
 
@@ -533,6 +536,6 @@ agent-background = none</pre>
   </footer>
 
   <div class="lightbox" data-lightbox hidden><img alt="" /></div>
-  <script src="../titan.js?v=13"></script>
+  <script src="../titan.js?v=14"></script>
 </body>
 </html>
