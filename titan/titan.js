@@ -470,6 +470,7 @@ void main() {
       "font-family": "repeat the line for fallbacks",
       "font-size": "in points; ⌘= and ⌘− change it until Titan quits",
       "cursor-style": "until a program asks for another",
+      "cursor-trail": "how the cursor moves: smear, comet, ripple or none",
       "tab-position": "a row across the top, or a column down the left",
       "reading-width": "characters a line of a Claude reply holds at most",
       "compact-ahead": "percent of the context at which a copy is compacted in the background; 0 leaves it to Claude Code",
@@ -479,6 +480,7 @@ void main() {
       "remote-control": "titan do from shells and agents; true keeps agents to their own panes",
       "keep-awake": "no idle sleep while a Claude session works",
       "links-in-titan": "web links open in a browser pane beside",
+      "browser-sign-in": "your own browser panes may sign in; agents' never do",
       "notify-after": "a command this many seconds long notifies when it ends",
     };
     const PRESETS = {
@@ -510,6 +512,7 @@ void main() {
       add("font-family", value("font-family"));
       add("font-size", value("font-size"));
       add("cursor-style", value("cursor-style"), value("cursor-style") === "block");
+      add("cursor-trail", value("cursor-trail"), value("cursor-trail") === "smear");
       add("tab-position", value("tab-position"), value("tab-position") === "top");
       section("claude pane");
       add("reading-width", value("reading-width"), value("reading-width") === "95");
@@ -521,6 +524,7 @@ void main() {
       add("remote-control", value("remote-control"));
       add("keep-awake", value("keep-awake"), value("keep-awake"));
       add("links-in-titan", value("links-in-titan"), value("links-in-titan"));
+      add("browser-sign-in", value("browser-sign-in"), !value("browser-sign-in"));
       add("notify-after", value("notify-after"), value("notify-after") === "10");
       if (value("x-recipe")) {
         block("recipes: ⌘P → Run Dev server");
@@ -569,7 +573,7 @@ void main() {
   // ---- Keys.
   const KEYS = [
     ["New Claude session", "⌘N"], ["New Claude session on a branch (worktree)", "⇧⌘N"], ["New tab", "⌘T"], ["New browser pane", "⇧⌘B"],
-    ["Open location", "⌘L"], ["Split right", "⌘D"], ["Split down", "⇧⌘D"], ["Expand or collapse pane", "⇧⌘↩"],
+    ["Open location", "⌘L"], ["Web Inspector in a browser pane", "⇧⌘I"], ["Split right", "⌘D"], ["Split down", "⇧⌘D"], ["Expand or collapse pane", "⇧⌘↩"],
     ["Next pane / previous pane", "⌘] ⌘["], ["Close pane", "⌘W"], ["Close tab", "⌥⌘W"], ["Close window", "⇧⌘W"],
     ["Next tab / previous tab", "⇧⌘] ⇧⌘["], ["Tab 1–8 / last tab", "⌘1–⌘8 ⌘9"], ["Command palette", "⌘P"],
     ["Show all tabs", "⌘E"], ["Go to waiting session", "⌘J"], ["Bigger / smaller / default text", "⌘= ⌘− ⌘0"],

@@ -31,8 +31,9 @@
         <a href="#claude">The Claude pane</a>
         <a href="#fork">Fork &amp; handoff</a>
         <a href="#terminal">The terminal</a>
+        <a href="#browser">The browser <span class="tag">new</span></a>
         <a href="#benji">Benji</a>
-        <a href="#worktrees">Worktrees <span class="tag">new</span></a>
+        <a href="#worktrees">Worktrees</a>
         <a href="#profiles">Profiles</a>
         <span class="toc-group">Reference</span>
         <a href="#actions">Actions</a>
@@ -183,11 +184,13 @@ titan browser and click Break.</span>
           <dt>Claude's questions, as a form</dt>
           <dd>When Claude or a skill asks you something, the card shows each question with its options to pick, one or several, and <strong>Other</strong> for an answer of your own. <strong>Answer</strong> sends them back.</dd>
           <dt>Every path is a link</dt>
-          <dd>File paths and URLs in the feed are clickable. A file opens beside the pane at its line, in a built-in viewer or your <code>$EDITOR</code>.</dd>
+          <dd>File paths and URLs in the feed are clickable. A file opens beside the pane at its line, in a built-in viewer or your <code>$EDITOR</code>. Markdown opens formatted, with a button for its source.</dd>
+          <dt>Select from anywhere</dt>
+          <dd>Drag to select across a reply's text, code and tables, starting on the text or in the empty space beside and between it, as on a web page. What you select is copied when you let go.</dd>
           <dt>Pages and diagrams, live</dt>
           <dd>HTML and SVG files Claude writes show up in the conversation as live pages. A <code>mermaid</code> block is drawn as a diagram, in the theme's colours.</dd>
           <dt>A worktree each</dt>
-          <dd><kbd>⇧⌘N</kbd> starts a session in a git worktree of its own, on a new or existing branch, so two sessions can work on one repository without stepping on each other. Closing the session removes the worktree, asking first if that would lose uncommitted changes; the branch stays. See <a href="#worktrees">Worktrees</a>.</dd>
+          <dd><kbd>⇧⌘N</kbd> starts a session in a git worktree of its own, on a new or existing branch, so two sessions can work on one repository without stepping on each other. <kbd>⌘N</kbd> offers one when another session is already open in that checkout. See <a href="#worktrees">Worktrees</a>.</dd>
           <dt>Model, effort, context</dt>
           <dd>A model picker, an effort slider and a ring for how full the context window is. Permission modes run from asking every time to YOLO.</dd>
           <dt>Your plan's usage</dt>
@@ -233,6 +236,8 @@ titan browser and click Break.</span>
           <dd>Shells and Claude sessions run in <code>titan-ptyd</code>, a small daemon, so quitting or updating Titan doesn't stop them. Reopen it and they're where you left them.</dd>
           <dt>Tabs and splits</dt>
           <dd><kbd>⌘D</kbd> and <kbd>⇧⌘D</kbd> split, <kbd>⇧⌘↩</kbd> expands a pane, and a grip shows on the divider as you drag it. Drag panes onto tabs, tabs out into windows. <kbd>⌘E</kbd> shows every tab and its panes.</dd>
+          <dt>Cursor trails</dt>
+          <dd><code>cursor-trail</code> animates the cursor as it moves: <code>smear</code> stretches it and lets it catch up, <code>comet</code> leaves a fading tail, <code>ripple</code> sends a ring out after a jump. Smear is the default, unless you use custom shaders; <code>none</code> turns it off.</dd>
           <dt>Float a pane</dt>
           <dd>The float button in a pane's header, or <strong>Float Pane</strong> in the palette, lifts it into a card over its window: drag its header to move it, its edges to resize it. <strong>–</strong> shrinks it to a pill in the bottom right corner, with a dot while Claude works or waits on you; click to open it again. Its session keeps running, and <strong>Put Pane Back</strong> returns it to its tab.</dd>
           <dt>Recipes</dt>
@@ -243,6 +248,24 @@ titan browser and click Break.</span>
           <dd>A dev server an agent backgrounded, a <code>nohup</code> from a pane you closed: <strong>Running in Background</strong> finds them, with their ports, and stops them.</dd>
           <dt>More than one Claude account</dt>
           <dd>Map folders to Claude accounts and each session opens under the right one, its history kept apart. Continue a session under the other account in one click.</dd>
+        </dl>
+      </section>
+
+      <section id="browser">
+        <h2>The browser <span class="tag">new</span></h2>
+        <p class="small">The Web Inspector and signing in are new in 0.17.</p>
+        <p class="lead">A browser pane sits beside your work, for pages you and your agents are working on. <kbd>⇧⌘B</kbd> opens one and <kbd>⌘L</kbd> goes to its address. Web links from shells and conversations open in it, unless <code>links-in-titan = false</code>.</p>
+        <dl class="ref">
+          <dt>Web Inspector</dt>
+          <dd>The wrench in the pane's bar, <kbd>⇧⌘I</kbd>, or <strong>Inspect Element</strong> in a page's context menu docks WebKit's inspector in the pane: elements, console, network, sources and storage. Agents have no tool for it, and nothing outside Titan can attach to your pages.</dd>
+          <dt>Sign-in pages wait for your click</dt>
+          <dd>By default a pane doesn't sign in to anything but a local server. A sign-in page (Google, Microsoft, Okta, GitHub, <code>/login</code> and OAuth pages) or a page asking for a password isn't shown: the pane offers a button to open it in your default browser. Nothing opens until you click it, and neither a page's script nor an agent can press it.</dd>
+          <dt>Or sign in to your own panes</dt>
+          <dd><code>browser-sign-in = true</code>, off by default, lets your own panes sign in and stay signed in. Their cookies are saved encrypted, with the key in your Keychain, so an agent with a shell can't read them from disk. Local storage isn't saved, so a site that keeps its login there signs out when Titan quits. Turn it off and what was saved is deleted at the next launch.</dd>
+          <dt>Agents stay out</dt>
+          <dd>Agents' panes never sign in and keep their cookies in memory, apart from yours. Their tools can't reach your panes, and <code>titan panes</code> hides those panes' addresses and titles from them.</dd>
+          <dt>When a site won't have it</dt>
+          <dd>A pane has no password manager and limited passkey support, and some providers refuse embedded browsers. The Safari button in the bar opens the page in your default browser.</dd>
         </dl>
       </section>
 
@@ -268,12 +291,15 @@ titan browser and click Break.</span>
       </section>
 
       <section id="worktrees">
-        <h2>Worktrees <span class="tag">new</span></h2>
-        <p class="small">.worktreeinclude is new in 0.16.</p>
+        <h2>Worktrees</h2>
         <p class="lead">A git worktree is a second working folder of the same repository, on a branch of its own. With agents it lets two sessions, or you and a session, change one repository at the same time without mixing each other's edits, tests or commits.</p>
         <dl class="ref">
           <dt>Start one</dt>
           <dd><kbd>⇧⌘N</kbd>, then type a new branch name (made from the remote's default branch) or pick an existing branch. Claude starts in <code>&lt;repo&gt;.worktrees/&lt;branch&gt;</code>, beside the repository. Review and merge its branch when it's done, like a teammate's.</dd>
+          <dt>Offered when a checkout is taken</dt>
+          <dd><kbd>⌘N</kbd> in a repository where another Claude session is already open asks first: <strong>In a Worktree…</strong> or <strong>Here</strong>, beside it. <code>worktree-offer = false</code> stops asking.</dd>
+          <dt>Closing the session</dt>
+          <dd>The worktree folder goes, and the branch stays with what's committed on it. Titan asks first if the folder holds uncommitted changes, or files git ignores that exist nowhere else, like a copied <code>.env</code> you edited, and names them. What's the same in the main checkout and what a build makes (<code>node_modules</code>, <code>.build</code>, <code>dist</code> and the like) go without asking.</dd>
           <dt>What a worktree is missing</dt>
           <dd>Only what git tracks. What the repository ignores, like <code>.env</code>, <code>node_modules</code> or built libraries, isn't there, so the project often won't run in a new worktree.</dd>
           <dt><code>.worktreeinclude</code></dt>
@@ -299,7 +325,7 @@ copy build</pre>
         <p class="lead">A profile is a set of settings laid over your config while it's on. Turning it off puts everything back as it was: your config itself is never rewritten.</p>
         <dl class="ref">
           <dt>Switch one on</dt>
-          <dd>The Profile row at the top of Settings (the one on is highlighted), View › Profile, or <strong>Switch Profile</strong> in the palette. <strong>None</strong> turns it off. The config gets one line, <code>profile = Presenting</code>.</dd>
+          <dd>The Profile row on Settings › Appearance (the one on is highlighted), View › Profile, or <strong>Switch Profile</strong> in the palette. <strong>None</strong> turns it off. The config gets one line, <code>profile = Presenting</code>.</dd>
           <dt>Titan's five</dt>
           <dd><strong>Minimal</strong>, a plain terminal. <strong>Agent-heavy</strong>, several sessions at once with their status down the left and the Mac kept awake. <strong>Keyboard-first</strong>, files in your editor and a block cursor. <strong>Presenting</strong>, larger text and strong contrast for a demo or a shared screen. <strong>Focus</strong>, no animations or long-command notifications.</dd>
           <dt>Your own</dt>
@@ -381,7 +407,7 @@ agent-background = none</pre>
           <dt>Its own browser, and only that</dt>
           <dd>An agent drives the browser pane beside the pane it runs in, not another conversation's.</dd>
           <dt>Never signed in</dt>
-          <dd>Titan's browser doesn't sign in to anything but a local server. Sign-in pages (Google, Microsoft, Okta, <code>/login</code> and OAuth pages) open in your default browser, and so does a page asking for a password. Cookies and storage are kept in memory and gone when Titan quits, so neither Titan nor an agent driving a pane ever holds your passwords or a signed-in session.</dd>
+          <dd>An agent's browser pane doesn't sign in to anything but a local server, and its cookies and storage are gone when Titan quits. A sign-in page shows a button for you to open it in your own browser, which only your click can press, so nothing in a pane can send an address to the browser you're signed in to. See <a href="#browser">The browser</a>.</dd>
           <dt>Known by where it started</dt>
           <dd>Titan reads which pane an agent belongs to from the agent's own process, not from what a request claims, so pointing <code>TITAN_PANE</code> at another pane gains nothing.</dd>
           <dt>A log of what it did</dt>
@@ -416,6 +442,9 @@ agent-background = none</pre>
               <label>cursor-style
                 <select name="cursor-style"><option>block</option><option selected>bar</option><option>underline</option></select>
               </label>
+              <label>cursor-trail
+                <select name="cursor-trail"><option>none</option><option selected>smear</option><option>comet</option><option>ripple</option></select>
+              </label>
               <label>tab-position
                 <select name="tab-position"><option>top</option><option>left</option></select>
               </label>
@@ -445,6 +474,7 @@ agent-background = none</pre>
               </label>
               <label class="check"><input type="checkbox" name="keep-awake" checked /> keep-awake</label>
               <label class="check"><input type="checkbox" name="links-in-titan" checked /> links-in-titan</label>
+              <label class="check"><input type="checkbox" name="browser-sign-in" /> browser-sign-in</label>
               <label>notify-after <input name="notify-after" type="number" min="0" max="600" value="10" /></label>
             </fieldset>
 
@@ -480,6 +510,8 @@ agent-background = none</pre>
           <dd>Yes. Run them in a Titan shell. They drive Titan with the <code>titan</code> command (<code>titan do</code>, <code>titan panes</code>, <code>titan browser</code>), and Titan keeps them to their own panes as it does Claude. The Claude pane itself is for Claude Code.</dd>
           <dt>Can agents type into my shells?</dt>
           <dd>Not without asking. They can use the panes they open themselves and the ones you grant; for any other shell, Titan asks you first, and you can allow it once or for that pane. It's all off until you set <code>remote-control = true</code>.</dd>
+          <dt>Can agents use my logins?</dt>
+          <dd>Not through Titan's browser. Agents' browser panes never sign in. If you turn on <code>browser-sign-in</code> for your own panes, agents' tools can't reach those panes and their saved cookies are encrypted, with the key in your Keychain. An agent with a shell runs as you, though, so it can still do what your user can, like opening a link in your default browser; keep that in mind when you allow its commands. See <a href="#browser">The browser</a>.</dd>
           <dt>Does it need an API key?</dt>
           <dd>No. Titan runs the Claude Code that's installed, so sessions use the account it's signed in with and count against that plan as usual. pi and other agents use whatever they're set up with.</dd>
           <dt>Does it change how Claude Code behaves?</dt>
@@ -501,6 +533,6 @@ agent-background = none</pre>
   </footer>
 
   <div class="lightbox" data-lightbox hidden><img alt="" /></div>
-  <script src="../titan.js?v=12"></script>
+  <script src="../titan.js?v=13"></script>
 </body>
 </html>
