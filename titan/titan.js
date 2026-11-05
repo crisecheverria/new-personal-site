@@ -482,6 +482,8 @@ void main() {
       "links-in-titan": "web links open in a browser pane beside",
       "browser-sign-in": "your own browser panes may sign in; agents' never do",
       "sidebar-status": "branch, pull request, changes and build at the foot of the sidebar",
+      "session-tools": "Claude may look up and read earlier sessions on the same account, without asking",
+      "orchestration": "Claude may run tasks in sessions of their own, asking you before each one starts",
       "notify-after": "a command this many seconds long notifies when it ends",
     };
     const PRESETS = {
@@ -527,6 +529,8 @@ void main() {
       add("links-in-titan", value("links-in-titan"), value("links-in-titan"));
       add("browser-sign-in", value("browser-sign-in"), !value("browser-sign-in"));
       add("sidebar-status", value("sidebar-status"), !value("sidebar-status"));
+      add("session-tools", value("session-tools"), value("session-tools"));
+      add("orchestration", value("orchestration"), value("orchestration"));
       add("notify-after", value("notify-after"), value("notify-after") === "10");
       if (value("x-recipe")) {
         block("recipes: ⌘P → Run Dev server");

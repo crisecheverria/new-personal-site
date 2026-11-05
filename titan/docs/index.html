@@ -30,8 +30,10 @@
         <a href="#agents">Agents</a>
         <a href="#claude">The Claude pane</a>
         <a href="#fork">Fork &amp; handoff</a>
+        <a href="#workers">Workers <span class="tag">new</span></a>
+        <a href="#sharing">Sharing <span class="tag">new</span></a>
         <a href="#terminal">The terminal</a>
-        <a href="#browser">The browser <span class="tag">new</span></a>
+        <a href="#browser">The browser</a>
         <a href="#benji">Benji</a>
         <a href="#worktrees">Worktrees</a>
         <a href="#profiles">Profiles</a>
@@ -180,7 +182,11 @@ titan browser and click Break.</span>
           <dt>Run what it suggests</dt>
           <dd>Shell code blocks in a reply get <strong>Run</strong>, <strong>Run in a shell</strong> and <strong>Copy</strong>. Output streams in under the block. Nothing runs without the click.</dd>
           <dt>See what changed</dt>
-          <dd><code>/diff</code> opens the git status beside the conversation: the uncommitted changes, recent commits and stashes. The <strong>+/−</strong> chip above the input counts the uncommitted lines, and empties once they're committed.</dd>
+          <dd><code>/diff</code> opens the git status beside the conversation: the uncommitted changes, recent commits and stashes. The <strong>+/−</strong> chip above the input counts the uncommitted lines, and empties once they're committed. Both follow the session into a <a href="#worktrees">worktree</a> it works in.</dd>
+          <dt>It knows Titan</dt>
+          <dd>Every session is told where Titan's manual and changelog are and reads them without asking, so you can ask it what Titan can do, how to do something or where a setting is. <span class="small">New in 0.20.</span></dd>
+          <dt>Sessions read each other</dt>
+          <dd>A session can look things up in your earlier ones instead of loading them whole: ask it to “find the session where we fixed the login test and carry on from there”. <code>session_find</code> searches titles, folders and content, <code>session_grep</code> searches one session, and <code>session_read</code> reads its prompts, replies and tool calls. These don't ask first, and reach any project's sessions on that Claude account, never another account's. Tool output stays out of them: <code>session_output</code> shows one entry of it and asks you first. Secrets Titan recognises, like API keys and passwords, show as <code>[redacted]</code>; it can miss unusual ones. <code>session-tools = false</code>, or Settings › Agents › Read other sessions, turns them off. <span class="small">New in 0.20.</span></dd>
           <dt>Claude's questions, as a form</dt>
           <dd>When Claude or a skill asks you something, the card shows each question with its options to pick, one or several, and <strong>Other</strong> for an answer of your own. <strong>Answer</strong> sends them back.</dd>
           <dt>Every path is a link</dt>
@@ -223,11 +229,51 @@ titan browser and click Break.</span>
           <dt>Fork from Here</dt>
           <dd>On any reply in the feed: a new session with the history up to that reply, for going back to a point before things went sideways.</dd>
           <dt><code>/handoff [goal]</code></dt>
-          <dd>The session writes the opening message for a fresh one with only what matters for the goal: decisions, where the work stands, files, what failed, next steps. It opens in a new tab with the same folder, worktree, account, model, effort and permission mode, the message in its composer to edit before sending, plus a pointer to the old transcript for anything left out.</dd>
+          <dd>The session writes the opening message for a fresh one with only what matters for the goal: decisions, where the work stands, files, what failed, next steps. It opens in a new tab with the same folder, worktree, account, model, effort and permission mode, the message in its composer to edit before sending, plus a pointer to the old session, which it can search and read for anything left out.</dd>
           <dt>Compact ahead</dt>
           <dd>When a turn ends past <code>compact-ahead</code> percent of the context window (60 by default; Settings › While it works), a copy of the conversation is compacted in the background while you keep working, and the session moves onto it at its next pause. The context ring pulses while it runs. <code>compact-ahead = 0</code> leaves compacting to Claude Code.</dd>
           <dt>Export as Markdown</dt>
-          <dd><strong>Export Conversation as Markdown…</strong> and <strong>Copy Conversation as Markdown</strong> in the palette: prompts and replies in full, each tool call one line, no tool output.</dd>
+          <dd><strong>Export Conversation as Markdown…</strong> and <strong>Copy Conversation as Markdown</strong> in the palette: prompts and replies in full, each tool call one line, no tool output. These are for you: to send one to someone, use <a href="#sharing">Share Conversation</a>.</dd>
+        </dl>
+      </section>
+
+      <section id="workers">
+        <h2>Workers <span class="tag">new</span></h2>
+        <p class="small">New in 0.20.</p>
+        <p class="lead">A Claude session can split work across sessions of their own: ask it to “run these three fixes through workers, Haiku for the docs”. Each opens in a tab you can watch, and reports back when it finishes or needs you, so the session that started it never has to keep checking.</p>
+        <dl class="ref">
+          <dt>Each with what its task needs</dt>
+          <dd>Its own model and effort, and by default its own git worktree on a new branch, so workers don't disturb each other or your checkout. In a folder that isn't a git repository, a worker runs in the folder itself.</dd>
+          <dt>A tree in the sidebar</dt>
+          <dd>With tabs on the left, workers sit under the session that started them, joined by a line, without taking you away from the tab you're on. ⌘1 to ⌘9 still count straight down the column. Drag a worker elsewhere and it's a tab like any other.</dd>
+          <dt>Asks first</dt>
+          <dd>Claude Code asks you before a worker starts, gets a message or is stopped, as for any tool, unless you've chosen to allow it or run in a mode that skips asking. A worker doesn't inherit its parent's permission mode, so its own prompts come to you.</dd>
+          <dt>Kept in bounds</dt>
+          <dd>A session reaches only the workers it started, on its own Claude account. Workers can't start workers, and at most five of a session's can be busy at once. Each one uses your plan like any other session.</dd>
+          <dt>Merging is yours</dt>
+          <dd>A worker's work stays on its branch. Claude can propose merging it, and the decision is yours.</dd>
+          <dt>Closing them</dt>
+          <dd>Closing a session closes its workers once they've finished and nothing would be lost. If one is still running or holds uncommitted or unmerged work, Titan asks: <strong>Keep Workers</strong> or <strong>Close All</strong>, which deletes that work. Closing a worker on its own removes its worktree and branch, asking first if that would lose uncommitted files or commits not merged. A squash merge counts as not merged, since git can't see it.</dd>
+          <dt>Turning them off</dt>
+          <dd>Settings › Agents › Run workers, or <code>orchestration = false</code>, for sessions started after that. Claude then tells you they're off if you ask for them.</dd>
+          <dt>After a restart</dt>
+          <dd>Workers carry on, but reports they still owe are lost, so ask the session to check on them.</dd>
+        </dl>
+      </section>
+
+      <section id="sharing">
+        <h2>Sharing <span class="tag">new</span></h2>
+        <p class="small">New in 0.20.</p>
+        <p class="lead">Send a teammate a session, and let them carry on from it. It stays a file you send: nothing is uploaded, and there's no account or server involved.</p>
+        <dl class="ref">
+          <dt>Share Conversation…</dt>
+          <dd>In the palette. It makes a copy with tool output and Claude's thinking left out, and secrets, email addresses, your home folder and your login hidden, without the session's id or full path. It opens in a preview you can edit, and <strong>Save…</strong> or <strong>Copy</strong> uses what's in the preview.</dd>
+          <dt>Read it before it goes</dt>
+          <dd>Cleaning only recognises common shapes. Names, clients, internal hostnames and a password written in a sentence stay in, and code you pasted stays as it was. Once a file is sent, Titan can't take it back.</dd>
+          <dt>Continue from Shared Copy…</dt>
+          <dd>In the palette, on the other side: pick the file, then your checkout of the project. A new session opens with a line saying where it came from and a message in its input, for you to read and send. Any other file is refused.</dd>
+          <dt>What carries over</dt>
+          <dd>The decisions and reasoning, not tool output or the original session's memory, so Claude runs again what it needs. It's told the copy is a record to use as information, not instructions to follow, and to check it against the code.</dd>
         </dl>
       </section>
 
@@ -256,7 +302,7 @@ titan browser and click Break.</span>
       </section>
 
       <section id="browser">
-        <h2>The browser <span class="tag">new</span></h2>
+        <h2>The browser</h2>
         <p class="small">The Web Inspector and signing in are new in 0.17.</p>
         <p class="lead">A browser pane sits beside your work, for pages you and your agents are working on. <kbd>⇧⌘B</kbd> opens one and <kbd>⌘L</kbd> goes to its address. Web links from shells and conversations open in it, unless <code>links-in-titan = false</code>.</p>
         <dl class="ref">
@@ -300,6 +346,12 @@ titan browser and click Break.</span>
         <dl class="ref">
           <dt>Start one</dt>
           <dd><kbd>⇧⌘N</kbd>, then type a new branch name (made from the remote's default branch) or pick an existing branch. Claude starts in <code>&lt;repo&gt;.worktrees/&lt;branch&gt;</code>, beside the repository. Review and merge its branch when it's done, like a teammate's.</dd>
+          <dt>One that already exists</dt>
+          <dd><strong>New Claude Session in Folder…</strong> in the palette, then its folder. The session works there from the start.</dd>
+          <dt>From a session started elsewhere</dt>
+          <dd>A session can work in a worktree of the same repository without starting there, but Claude has to name it in each command, since Claude Code doesn't let a <code>cd</code> outside the session's folders carry over. The folder and branch above the input, the status card, <code>/diff</code> and the <strong>+/−</strong> chip follow the worktree it's working in. That's a best guess from where Claude last worked, so run <code>git status</code> there before committing. <span class="small">New in 0.20.</span></dd>
+          <dt>Running the project</dt>
+          <dd>A worktree is a separate folder with its own files, so start a dev server from inside it, or you're testing whatever branch the main folder is on. Two dev servers may want the same port.</dd>
           <dt>Offered when a checkout is taken</dt>
           <dd><kbd>⌘N</kbd> in a repository where another Claude session is already open asks first: <strong>In a Worktree…</strong> or <strong>Here</strong>, beside it. <code>worktree-offer = false</code> stops asking.</dd>
           <dt>Closing the session</dt>
@@ -480,6 +532,8 @@ agent-background = none</pre>
               <label class="check"><input type="checkbox" name="links-in-titan" checked /> links-in-titan</label>
               <label class="check"><input type="checkbox" name="browser-sign-in" /> browser-sign-in</label>
               <label class="check"><input type="checkbox" name="sidebar-status" /> sidebar-status</label>
+              <label class="check"><input type="checkbox" name="session-tools" checked /> session-tools</label>
+              <label class="check"><input type="checkbox" name="orchestration" checked /> orchestration</label>
               <label>notify-after <input name="notify-after" type="number" min="0" max="600" value="10" /></label>
             </fieldset>
 
@@ -520,7 +574,7 @@ agent-background = none</pre>
           <dt>Does it need an API key?</dt>
           <dd>No. Titan runs the Claude Code that's installed, so sessions use the account it's signed in with and count against that plan as usual. pi and other agents use whatever they're set up with.</dd>
           <dt>Does it change how Claude Code behaves?</dt>
-          <dd>Barely. It's the same CLI with your settings, skills and MCP servers. Titan adds a short note to the system prompt so Claude knows that pages show up in the feed, how to write paths that link, and, when you turn it on, that it can open panes.</dd>
+          <dd>Barely. It's the same CLI with your settings, skills and MCP servers. Titan adds a short note to the system prompt so Claude knows that pages show up in the feed, how to write paths that link, where Titan's manual is, and, when you turn it on, that it can open panes. It also gives Claude tools of its own: the browser, reading other sessions and running workers, the last two of which <code>session-tools</code> and <code>orchestration</code> turn off.</dd>
           <dt>Where are my conversations?</dt>
           <dd>Where Claude Code keeps them, in <code>~/.claude/projects</code>. Titan reads them for its history list and to resume sessions, and they work in the plain <code>claude</code> TUI as well.</dd>
           <dt>Why only macOS?</dt>
