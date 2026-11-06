@@ -474,7 +474,7 @@ void main() {
       "tab-position": "a row across the top, or a column down the left",
       "reading-width": "characters a line of a Claude reply holds at most",
       "compact-ahead": "percent of the context at which a copy is compacted in the background; 0 leaves it to Claude Code",
-      "agent-background": "what a new Claude session is drawn over: liquid, a picture, or none",
+      "agent-background": "what a new Claude session is drawn over: liquid, or dots",
       "file-links": "a path clicked in a shell or a reply opens here",
       editor: "for file-links = editor, and ⌘,",
       "remote-control": "titan do from shells and agents; true keeps agents to their own panes",

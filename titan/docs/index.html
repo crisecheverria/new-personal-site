@@ -173,7 +173,7 @@ titan browser and click Break.</span>
       <section id="claude">
         <h2>The Claude pane</h2>
         <p class="lead">
-          <kbd>⌘N</kbd> starts a Claude Code session in the folder you're working in, drawn as a conversation with an input box of its own. <strong>New Claude Session in Folder…</strong> in the palette asks which folder, and <strong>Change folder…</strong> on the folder chip above the input starts one there in the same pane.
+          <kbd>⌘N</kbd> opens a box for your first prompt, with the folder and model as chips already filled in: write, press Return, and a Claude Code session starts in a new tab, drawn as a conversation with an input box of its own. <kbd>⌘O</kbd> starts one in a folder you choose, <kbd>⌘K</kbd> goes to any open session or resumes a past one, and <strong>Change folder…</strong> on the folder chip above the input starts one there in the same pane. The <strong>+</strong> in the tab bar offers New Session and New Tab. With nothing open, Titan shows a start screen on your Claude pane background rather than a shell.
           It runs Claude Code in its structured stream mode, so replies, tool calls and their output arrive as messages instead of a scraped screen.
         </p>
         <dl class="ref">
@@ -196,7 +196,7 @@ titan browser and click Break.</span>
           <dt>Pages and diagrams, live</dt>
           <dd>HTML and SVG files Claude writes show up in the conversation as live pages. A <code>mermaid</code> block is drawn as a diagram, in the theme's colours.</dd>
           <dt>A worktree each</dt>
-          <dd><kbd>⇧⌘N</kbd> starts a session in a git worktree of its own, on a new or existing branch, so two sessions can work on one repository without stepping on each other. <kbd>⌘N</kbd> offers one when another session is already open in that checkout. See <a href="#worktrees">Worktrees</a>.</dd>
+          <dd><kbd>⇧⌘N</kbd> starts a session in a git worktree of its own, on a new or existing branch, so two sessions can work on one repository without stepping on each other. A session works directly in its folder unless you ask for one. See <a href="#worktrees">Worktrees</a>.</dd>
           <dt>Where the work stands</dt>
           <dd><code>sidebar-status = true</code> adds a card at the foot of the left sidebar for the selected session: its branch, worktree, pull request and its review, changes and build, each opening where it says. Builds come from GitHub or a Bitbucket Server, where Jenkins and other CI report, so they need no token of their own. It uses the same logins as <code>/pr</code> and only reads with them.</dd>
           <dt>Ask Claude about a pull request</dt>
@@ -212,7 +212,13 @@ titan browser and click Break.</span>
           <dt>Dictate</dt>
           <dd>With <a href="https://github.com/anomalyco/hex">Hex</a> installed, a microphone sits beside the send button: click and speak, click again and the words go into the box, not sent.</dd>
           <dt>Know which session needs you</dt>
-          <dd>Tabs show whether their sessions are working, done or waiting on you. <kbd>⌘J</kbd> jumps to the one that's waiting; hover a tab to see what each session is doing.</dd>
+          <dd>Tabs show whether their sessions are working, done or waiting on you. <kbd>⌘J</kbd> jumps to the one that's waiting.</dd>
+          <dt>More on hover</dt>
+          <dd>Rest the pointer on a tab, in the left column or the top row: its status, when it started and was last active, model and effort, folder, branch, how full the context is, what it's waiting on, and the tab's other panes. Top-row tabs also show a picture of their panes. It reads only what's on your Mac, so it never waits on the network. <span class="small">New in 0.22.</span></dd>
+          <dt>The session's menu</dt>
+          <dd><strong>⋮</strong> in a Claude pane's header, or right-click its tab to act on a session without going to it: Export, Copy Session ID, Fork, Hand Off, Continue in another account and Usage. Hand Off and Usage each send Claude a message. <strong>⋮</strong> also holds Rename, Git status, Open Browser, Archived Sessions and Archive Session. <span class="small">New in 0.22.</span></dd>
+          <dt>Archive and come back</dt>
+          <dd>The archive button in a pane's header closes a session and keeps its conversation. <strong>Archived Sessions</strong> resumes it: the last 24 hours are listed under the tabs in the left column, and all of them from there or from <kbd>⌘K</kbd>, the palette or <strong>⋮</strong>. Each row says how long it has, because Claude Code, not Titan, deletes a transcript left unused for <code>cleanupPeriodDays</code> in that account's <code>settings.json</code> (30 days by default). <span class="small">New in 0.22.</span></dd>
         </dl>
         <figure class="media zoomable">
           <img src="../feed.avif?v=4" loading="lazy" alt="A Claude session in Titan: replies with tool steps folded into one line, and a permission card asking to read the shell beside it" />
@@ -233,7 +239,7 @@ titan browser and click Break.</span>
           <dt>Compact ahead</dt>
           <dd>When a turn ends past <code>compact-ahead</code> percent of the context window (60 by default; Settings › While it works), a copy of the conversation is compacted in the background while you keep working, and the session moves onto it at its next pause. The context ring pulses while it runs. <code>compact-ahead = 0</code> leaves compacting to Claude Code.</dd>
           <dt>Export as Markdown</dt>
-          <dd><strong>Export Conversation as Markdown…</strong> and <strong>Copy Conversation as Markdown</strong> in the palette: prompts and replies in full, each tool call one line, no tool output. These are for you: to send one to someone, use <a href="#sharing">Share Conversation</a>.</dd>
+          <dd>Save or copy a conversation from Export in the session's menu, or from the palette: prompts and replies in full, each tool call one line, no tool output. These are for you: to send one to someone, use <a href="#sharing">Share Conversation</a>.</dd>
         </dl>
       </section>
 
@@ -243,7 +249,7 @@ titan browser and click Break.</span>
         <p class="lead">A Claude session can split work across sessions of their own: ask it to “run these three fixes through workers, Haiku for the docs”. Each opens in a tab you can watch, and reports back when it finishes or needs you, so the session that started it never has to keep checking.</p>
         <dl class="ref">
           <dt>Each with what its task needs</dt>
-          <dd>Its own model and effort, and by default its own git worktree on a new branch, so workers don't disturb each other or your checkout. In a folder that isn't a git repository, a worker runs in the folder itself.</dd>
+          <dd>Its own model and effort. Workers work directly in their folder, where they share its files and can step on each other, so ask Claude to give them worktrees when that matters: each then gets its own, on a new branch.</dd>
           <dt>A tree in the sidebar</dt>
           <dd>With tabs on the left, workers sit under the session that started them, joined by a line, without taking you away from the tab you're on. ⌘1 to ⌘9 still count straight down the column. Drag a worker elsewhere and it's a tab like any other.</dd>
           <dt>Asks first</dt>
@@ -345,15 +351,15 @@ titan browser and click Break.</span>
         <p class="lead">A git worktree is a second working folder of the same repository, on a branch of its own. With agents it lets two sessions, or you and a session, change one repository at the same time without mixing each other's edits, tests or commits.</p>
         <dl class="ref">
           <dt>Start one</dt>
-          <dd><kbd>⇧⌘N</kbd>, then type a new branch name (made from the remote's default branch) or pick an existing branch. Claude starts in <code>&lt;repo&gt;.worktrees/&lt;branch&gt;</code>, beside the repository. Review and merge its branch when it's done, like a teammate's.</dd>
+          <dd>A session works directly in its folder unless you ask. <strong>New Worktree</strong> in the folder chip of the <kbd>⌘N</kbd> box gives it a checkout of its own, or press <kbd>⇧⌘N</kbd>, then type a new branch name (made from the remote's default branch) or pick an existing branch. Claude starts in <code>&lt;repo&gt;.worktrees/&lt;branch&gt;</code>, beside the repository. Review and merge its branch when it's done, like a teammate's.</dd>
           <dt>One that already exists</dt>
-          <dd><strong>New Claude Session in Folder…</strong> in the palette, then its folder. The session works there from the start.</dd>
+          <dd><kbd>⌘O</kbd>, then its folder, or pick it by branch in the folder chip of the <kbd>⌘N</kbd> box. The session works there from the start.</dd>
           <dt>From a session started elsewhere</dt>
           <dd>A session can work in a worktree of the same repository without starting there, but Claude has to name it in each command, since Claude Code doesn't let a <code>cd</code> outside the session's folders carry over. The folder and branch above the input, the status card, <code>/diff</code> and the <strong>+/−</strong> chip follow the worktree it's working in. That's a best guess from where Claude last worked, so run <code>git status</code> there before committing. <span class="small">New in 0.20.</span></dd>
           <dt>Running the project</dt>
           <dd>A worktree is a separate folder with its own files, so start a dev server from inside it, or you're testing whatever branch the main folder is on. Two dev servers may want the same port.</dd>
-          <dt>Offered when a checkout is taken</dt>
-          <dd><kbd>⌘N</kbd> in a repository where another Claude session is already open asks first: <strong>In a Worktree…</strong> or <strong>Here</strong>, beside it. <code>worktree-offer = false</code> stops asking.</dd>
+          <dt>Asked when a checkout is taken</dt>
+          <dd>Off by default. With <code>worktree-offer = true</code>, starting a session in a repository where another Claude session is already open asks first: <strong>In a Worktree…</strong> or <strong>Here</strong>.</dd>
           <dt>Closing the session</dt>
           <dd>The worktree folder goes, and the branch stays with what's committed on it. Titan asks first if the folder holds uncommitted changes, or files git ignores that exist nowhere else, like a copied <code>.env</code> you edited, and names them. What's the same in the main checkout and what a build makes (<code>node_modules</code>, <code>.build</code>, <code>dist</code> and the like) go without asking.</dd>
           <dt>What a worktree is missing</dt>
@@ -400,7 +406,7 @@ adjust-cell-height = 12%
 minimum-contrast = 4.5
 reading-width = 72
 notify-after = 0
-agent-background = none</pre>
+agent-background = dots</pre>
         </div>
       </section>
 
@@ -513,7 +519,7 @@ agent-background = none</pre>
               </label>
               <label>compact-ahead <input name="compact-ahead" type="number" min="0" max="95" value="60" /></label>
               <label>agent-background
-                <select name="agent-background"><option>liquid</option><option>generated</option><option>none</option></select>
+                <select name="agent-background"><option>liquid</option><option>dots</option></select>
               </label>
               <label>file-links
                 <select name="file-links"><option>viewer</option><option>editor</option></select>
@@ -592,6 +598,6 @@ agent-background = none</pre>
   </footer>
 
   <div class="lightbox" data-lightbox hidden><img alt="" /></div>
-  <script src="../titan.js?v=15"></script>
+  <script src="../titan.js?v=16"></script>
 </body>
 </html>
