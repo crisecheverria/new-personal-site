@@ -578,7 +578,7 @@ void main() {
 
   // ---- Keys.
   const KEYS = [
-    ["New Claude session", "⌘N"], ["New Claude session on a branch (worktree)", "⇧⌘N"], ["New tab", "⌘T"], ["New browser pane", "⇧⌘B"],
+    ["New Claude session", "⌘N"], ["New Claude session on a branch (worktree)", "⇧⌘N"], ["New Claude session in a folder", "⌘O"], ["Sessions: go to one, start one, resume one", "⌘K"], ["New tab", "⌘T"], ["New browser pane", "⇧⌘B"],
     ["Open location", "⌘L"], ["Web Inspector in a browser pane", "⇧⌘I"], ["Split right", "⌘D"], ["Split down", "⇧⌘D"], ["Expand or collapse pane", "⇧⌘↩"],
     ["Next pane / previous pane", "⌘] ⌘["], ["Close pane", "⌘W"], ["Close tab", "⌥⌘W"], ["Close window", "⇧⌘W"],
     ["Next tab / previous tab", "⇧⌘] ⇧⌘["], ["Tab 1–8 / last tab", "⌘1–⌘8 ⌘9"], ["Command palette", "⌘P"], ["Keyboard shortcuts", "⌘/"],
