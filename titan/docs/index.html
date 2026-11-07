@@ -212,7 +212,11 @@ titan browser and click Break.</span>
           <dt>Dictate</dt>
           <dd>With <a href="https://github.com/anomalyco/hex">Hex</a> installed, a microphone sits beside the send button: click and speak, click again and the words go into the box, not sent.</dd>
           <dt>Know which session needs you</dt>
-          <dd>Tabs show whether their sessions are working, done or waiting on you. <kbd>⌘J</kbd> jumps to the one that's waiting.</dd>
+          <dd>A Claude session's icon is a small solid that says how it's doing: it turns while the session works, holds still as a hexagon when it waits on you, becomes a twisted infinity when it's done and splits apart when it fails. Each session keeps its own solid, so workers are easy to tell apart. A split tab shows its Claude session's icon and name, whichever pane has focus. <kbd>⌘J</kbd> jumps to the one that's waiting. <span class="small">New in 0.25.</span></dd>
+          <dt>Projects in the sidebar</dt>
+          <dd><code>sidebar-projects = true</code> puts the left column's tabs under a heading for each repository, worktrees included, or folder. Click a heading to fold it, hover it for a <strong>+</strong> that starts a session there, and drag it to move the project. <span class="small">New in 0.24.</span></dd>
+          <dt>New Project</dt>
+          <dd><kbd>⇧⌘O</kbd> gets you a project folder three ways: open one you have, clone one of your GitHub repositories or any git address, or start from scratch, with a private GitHub repository if you ask for one. It ends in <kbd>⌘N</kbd>'s box with that folder chosen. <span class="small">New in 0.24.</span></dd>
           <dt>More on hover</dt>
           <dd>Rest the pointer on a tab, in the left column or the top row: its status, when it started and was last active, model and effort, folder, branch, how full the context is, what it's waiting on, and the tab's other panes. Top-row tabs also show a picture of their panes. It reads only what's on your Mac, so it never waits on the network. <span class="small">New in 0.22.</span></dd>
           <dt>The session's menu</dt>
@@ -262,8 +266,12 @@ titan browser and click Break.</span>
           <dd>Closing a session closes its workers once they've finished and nothing would be lost. If one is still running or holds uncommitted or unmerged work, Titan asks: <strong>Keep Workers</strong> or <strong>Close All</strong>, which deletes that work. Closing a worker on its own removes its worktree and branch, asking first if that would lose uncommitted files or commits not merged. A squash merge counts as not merged, since git can't see it.</dd>
           <dt>Turning them off</dt>
           <dd>Settings › Agents › Run workers, or <code>orchestration = false</code>, for sessions started after that. Claude then tells you they're off if you ask for them.</dd>
+          <dt>The worker card</dt>
+          <dd>A session with workers gets a card at the top of its pane: how many are waiting, working and done, a line for each that takes you to its tab, and a few lines of summary the session keeps up to date as reports come in. Click its heading to fold it; Settings › Agents › Worker card, or <code>worker-ledger = false</code>, turns it off. <span class="small">New in 0.26.</span></dd>
+          <dt>Results arrive whole</dt>
+          <dd>A worker's report carries its whole last reply, up to 30,000 characters, so the session doesn't have to go looking for the rest.</dd>
           <dt>After a restart</dt>
-          <dd>Workers carry on, but reports they still owe are lost, so ask the session to check on them.</dd>
+          <dd>Workers carry on while Titan is closed, and a report still owed arrives when you open it again, waking the session that's owed it. A worker whose process was lost, to a Mac restart say, reports that its work may be unfinished. <span class="small">New in 0.25.</span></dd>
         </dl>
       </section>
 
@@ -320,6 +328,8 @@ titan browser and click Break.</span>
           <dd><code>browser-sign-in = true</code>, off by default, lets your own panes sign in and stay signed in. Their cookies are saved encrypted, with the key in your Keychain, so an agent with a shell can't read them from disk. Local storage isn't saved, so a site that keeps its login there signs out when Titan quits. Turn it off and what was saved is deleted at the next launch.</dd>
           <dt>Agents stay out</dt>
           <dd>Agents' panes never sign in and keep their cookies in memory, apart from yours. Their tools can't reach your panes, and <code>titan panes</code> hides those panes' addresses and titles from them.</dd>
+          <dt>Frames and whole pages</dt>
+          <dd>Agents read and use iframes of any origin, such as an embedded form or checkout, and can screenshot a whole page without scrolling the one you're watching. <span class="small">New in 0.23.</span></dd>
           <dt>When a site won't have it</dt>
           <dd>A pane has no password manager and limited passkey support, and some providers refuse embedded browsers. The Safari button in the bar opens the page in your default browser.</dd>
         </dl>
@@ -538,8 +548,10 @@ agent-background = dots</pre>
               <label class="check"><input type="checkbox" name="links-in-titan" checked /> links-in-titan</label>
               <label class="check"><input type="checkbox" name="browser-sign-in" /> browser-sign-in</label>
               <label class="check"><input type="checkbox" name="sidebar-status" /> sidebar-status</label>
+              <label class="check"><input type="checkbox" name="sidebar-projects" /> sidebar-projects</label>
               <label class="check"><input type="checkbox" name="session-tools" checked /> session-tools</label>
               <label class="check"><input type="checkbox" name="orchestration" checked /> orchestration</label>
+              <label class="check"><input type="checkbox" name="worker-ledger" checked /> worker-ledger</label>
               <label>notify-after <input name="notify-after" type="number" min="0" max="600" value="10" /></label>
             </fieldset>
 
@@ -598,6 +610,6 @@ agent-background = dots</pre>
   </footer>
 
   <div class="lightbox" data-lightbox hidden><img alt="" /></div>
-  <script src="../titan.js?v=17"></script>
+  <script src="../titan.js?v=18"></script>
 </body>
 </html>
