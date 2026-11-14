@@ -319,6 +319,8 @@ void main() {
     { g: "Panes", name: "panes", shellCmd: "titan panes", tool: "titan_panes",
       out: "ID        KIND     WHERE   NAME          FOLDER           USE     RUNNING\n1CB1ABB5  shell    tab 1   π - pomodoro  ~/code/pomodoro  own     pi\n9F99C1B4  shell    tab 1*  zsh           ~/code/pomodoro  opened  npm run dev\nA06A9837  browser  tab 1   Pomodoro      -                opened  http://localhost:4173/",
       about: "Every pane, window by window and tab by tab: its id, kind, folder and what runs in it, and which ones the caller may use, and why." },
+    { g: "Panes", name: "focus_pane", args: `pane=${id.slice(0, 8)}…`, key: "none", out: `{"action":"focus_pane","ok":true,"pane":"${id}"}`,
+      about: "Brings that pane forward, in its window and tab: what a hook or plugin uses after opening a file in the Neovim there." },
     { g: "Panes", name: "toggle_split_zoom", key: "⇧⌘↩", out: '{"action":"toggle_split_zoom","ok":true}', about: "Expands the pane to the whole tab, or puts it back." },
     { g: "Panes", name: "goto_split", args: "direction=next", key: "⌘]", keyArg: "next", out: '{"action":"goto_split:next","ok":true}', about: "Moves the focus to the next pane, or the previous one (⌘[)." },
     { g: "Panes", name: "close_pane", args: `pane=${id.slice(0, 8)}…`, key: "⌘W", out: `{"action":"close_pane","ok":true,"pane":"${id}"}`, about: "Closes a pane. An agent needs pane= and may close only its own panes; close_tab and close_window it may not run at all." },
@@ -362,7 +364,7 @@ void main() {
     const forms = (a) => {
       const via = selected("via");
       if (via === "key") {
-        if (a.browser || a.name === "panes" || a.name === "read_pane") {
+        if (a.browser || a.name === "panes" || a.name === "read_pane" || a.name === "focus_pane") {
           return { where: "~/.config/titan/config", cmd: "", out: `# ${a.browser ? "titan browser tools" : a.name} have no key: they're for scripts and agents.` };
         }
         const arg = a.keyArg ? `:${a.keyArg}` : "";
@@ -476,6 +478,7 @@ void main() {
       "compact-ahead": "percent of the context at which a copy is compacted in the background; 0 leaves it to Claude Code",
       "agent-background": "what a new Claude session is drawn over: liquid, or dots",
       "file-links": "a path clicked in a shell or a reply opens here",
+      tips: "a key or command worth knowing, under the running time while Claude works",
       editor: "for file-links = editor, and ⌘,",
       "remote-control": "titan do from shells and agents; true keeps agents to their own panes",
       "keep-awake": "no idle sleep while a Claude session works",
@@ -485,7 +488,7 @@ void main() {
       "sidebar-projects": "the sidebar's tabs under a heading for each repository or folder",
       "session-tools": "Claude may look up and read earlier sessions on the same account, without asking",
       "orchestration": "Claude may run tasks in sessions of their own, asking you before each one starts",
-      "worker-ledger": "a card over a session with workers: how each is doing, and a summary it keeps",
+      "worker-ledger": "the Recurring checks strip over a session with schedules",
       "notify-after": "a command this many seconds long notifies when it ends",
     };
     const PRESETS = {
@@ -523,6 +526,7 @@ void main() {
       add("reading-width", value("reading-width"), value("reading-width") === "95");
       add("compact-ahead", value("compact-ahead"), value("compact-ahead") === "60");
       add("agent-background", value("agent-background"), value("agent-background") === "liquid");
+      add("tips", value("tips"), value("tips"));
       add("file-links", value("file-links"), value("file-links") === "viewer");
       add("editor", value("editor"));
       section("agents");

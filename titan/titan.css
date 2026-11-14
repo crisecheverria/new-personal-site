@@ -136,6 +136,8 @@ footer {
 /* Fork & handoff: the sessions as a little tree. */
 .lineage { max-width: 820px; margin: 32px auto 0; text-align: left; }
 .term.lineage pre { min-height: 0; }
+/* A few lines of config or script: as tall as they are. */
+.term.snippet pre { min-height: 0; }
 .feature .small { margin-top: 14px; }
 
 /* Benji, new in 0.12: his own section, the name in the spectrum. */

@@ -4,12 +4,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Titan docs</title>
-  <meta name="description" content="How to set up and use Titan: agents, the Claude pane, titan actions, pane limits, the config, keys and the FAQ." />
+  <meta name="description" content="How to set up and use Titan: agents, the Claude pane, workers, Spaces, hooks and Lua plugins, titan actions, pane limits, the config, keys and the FAQ." />
   <meta name="theme-color" content="#1d2021" />
   <link rel="icon" type="image/png" href="../icon.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../titan.css?v=16" />
+  <link rel="stylesheet" href="../titan.css?v=17" />
 </head>
 <body class="docs">
   <header class="nav">
@@ -30,13 +30,17 @@
         <a href="#agents">Agents</a>
         <a href="#claude">The Claude pane</a>
         <a href="#fork">Fork &amp; handoff</a>
-        <a href="#workers">Workers <span class="tag">new</span></a>
-        <a href="#sharing">Sharing <span class="tag">new</span></a>
+        <a href="#workers">Workers</a>
+        <a href="#sharing">Sharing</a>
+        <a href="#spaces">Spaces</a>
         <a href="#terminal">The terminal</a>
         <a href="#browser">The browser</a>
         <a href="#benji">Benji</a>
         <a href="#worktrees">Worktrees</a>
         <a href="#profiles">Profiles</a>
+        <span class="toc-group">Extend</span>
+        <a href="#hooks">Hooks <span class="tag">new</span></a>
+        <a href="#lua">Lua plugins <span class="tag">new</span></a>
         <span class="toc-group">Reference</span>
         <a href="#actions">Actions</a>
         <a href="#safety">Pane limits</a>
@@ -62,7 +66,7 @@
       <section id="setup">
         <h2>Set it up</h2>
         <ol class="setup">
-          <li><strong>Install an agent.</strong> Claude Code for Claude panes, and pi or any other agent you like for shells.</li>
+          <li><strong>Install an agent.</strong> Claude Code for Claude panes, and pi or any other agent you like for shells. Titan finds Claude Code wherever it's installed (npm, nvm, Volta, Homebrew, the native installer); if it doesn't, set <code>claude-path = /path/to/claude</code> (Settings › Agents › Claude Code).</li>
           <li><strong>Open the config with <kbd>⌘,</kbd>.</strong> It's <code>~/.config/titan/config</code>, with every setting written out and commented on first launch. Titan reads your Ghostty config first, so your font and theme carry over.</li>
           <li><strong>Save.</strong> Titan applies changes within a second. A line it can't read shows in a bar with its line number.</li>
         </ol>
@@ -180,7 +184,7 @@ titan browser and click Break.</span>
           <dt>Send while it works</dt>
           <dd><kbd>↩</kbd> sends at once, and Claude takes the message in at the running turn's next step. <kbd>⌥↩</kbd> queues it for when the turn ends instead.</dd>
           <dt>Run what it suggests</dt>
-          <dd>Shell code blocks in a reply get <strong>Run</strong>, <strong>Run in a shell</strong> and <strong>Copy</strong>. Output streams in under the block. Nothing runs without the click.</dd>
+          <dd>Shell code blocks in a reply get <strong>Run</strong> and <strong>Run in a shell</strong>. Output streams in under the block. Nothing runs without the click. Every code block shows <strong>Copy</strong> when you hover it, beside its language: it copies the code as written, and a shell block's copies the commands of a <code>$ cmd</code> transcript without the prompts. <span class="small">Copy on every block new in 0.29.</span></dd>
           <dt>See what changed</dt>
           <dd><code>/diff</code> opens the git status beside the conversation: the uncommitted changes, recent commits and stashes. The <strong>+/−</strong> chip above the input counts the uncommitted lines, and empties once they're committed. Both follow the session into a <a href="#worktrees">worktree</a> it works in.</dd>
           <dt>It knows Titan</dt>
@@ -195,12 +199,18 @@ titan browser and click Break.</span>
           <dd>Drag to select across a reply's text, code and tables, starting on the text or in the empty space beside and between it, as on a web page. What you select is copied when you let go.</dd>
           <dt>Pages and diagrams, live</dt>
           <dd>HTML and SVG files Claude writes show up in the conversation as live pages. A <code>mermaid</code> block is drawn as a diagram, in the theme's colours.</dd>
+          <dt>Start on a branch</dt>
+          <dd>Typing in the <kbd>⌘N</kbd> box's folder chip also searches the project's branches, local and remote, however old: <code>DA-253</code> finds <code>feature/DA-253-…</code>. Picking one starts the session in a worktree on that branch, or where it's already checked out, so it doesn't move the branch other sessions in the project's folder are on. <span class="small">New in 0.33.</span></dd>
+          <dt>Tips while it works</dt>
+          <dd>Under the turn's running time, a key or command worth knowing, a new one every 12 seconds, with your own keys if you've rebound them. <code>tips = false</code> hides them. <span class="small">New in 0.27.</span></dd>
           <dt>A worktree each</dt>
           <dd><kbd>⇧⌘N</kbd> starts a session in a git worktree of its own, on a new or existing branch, so two sessions can work on one repository without stepping on each other. A session works directly in its folder unless you ask for one. See <a href="#worktrees">Worktrees</a>.</dd>
           <dt>Where the work stands</dt>
           <dd><code>sidebar-status = true</code> adds a card at the foot of the left sidebar for the selected session: its branch, worktree, pull request and its review, changes and build, each opening where it says. Builds come from GitHub or a Bitbucket Server, where Jenkins and other CI report, so they need no token of their own. It uses the same logins as <code>/pr</code> and only reads with them.</dd>
           <dt>Ask Claude about a pull request</dt>
           <dd>The Review pane that <code>/pr</code> opens has an input at its foot: with nothing typed Claude reviews the whole pull request, or ask it something. It works in a session beside the review, asks before doing anything and reports to you; nothing is posted.</dd>
+          <dt>Pick a pull request</dt>
+          <dd><strong>Review Pull Request…</strong> in the palette takes a link or a number. With <code>review-list = Work, git.example.com/PROJECT/repo</code> in the config it also lists that repository's open pull requests, for folders on that Claude account. <span class="small">New in 0.30.</span></dd>
           <dt>Model, effort, context</dt>
           <dd>A model picker, an effort slider and a ring for how full the context window is. Permission modes run from asking every time to YOLO.</dd>
           <dt>Your plan's usage</dt>
@@ -248,7 +258,7 @@ titan browser and click Break.</span>
       </section>
 
       <section id="workers">
-        <h2>Workers <span class="tag">new</span></h2>
+        <h2>Workers</h2>
         <p class="small">New in 0.20.</p>
         <p class="lead">A Claude session can split work across sessions of their own: ask it to “run these three fixes through workers, Haiku for the docs”. Each opens in a tab you can watch, and reports back when it finishes or needs you, so the session that started it never has to keep checking.</p>
         <dl class="ref">
@@ -266,8 +276,10 @@ titan browser and click Break.</span>
           <dd>Closing a session closes its workers once they've finished and nothing would be lost. If one is still running or holds uncommitted or unmerged work, Titan asks: <strong>Keep Workers</strong> or <strong>Close All</strong>, which deletes that work. Closing a worker on its own removes its worktree and branch, asking first if that would lose uncommitted files or commits not merged. A squash merge counts as not merged, since git can't see it.</dd>
           <dt>Turning them off</dt>
           <dd>Settings › Agents › Run workers, or <code>orchestration = false</code>, for sessions started after that. Claude then tells you they're off if you ask for them.</dd>
-          <dt>The worker card</dt>
-          <dd>A session with workers gets a card at the top of its pane: how many are waiting, working and done, a line for each that takes you to its tab, and a few lines of summary the session keeps up to date as reports come in. Click its heading to fold it; Settings › Agents › Worker card, or <code>worker-ledger = false</code>, turns it off. <span class="small">New in 0.26.</span></dd>
+          <dt>Workers as cards</dt>
+          <dd>Each worker shows as a card in the conversation that started it, where it was started: its status, what it's at and who started it. Click it to open its tab. A turn that only starts workers or takes their reports shows just the cards. <span class="small">New in 0.27.</span></dd>
+          <dt>Recurring checks</dt>
+          <dd>Ask a session to do something regularly, “check the nightly build every hour and fix what broke”, and it sets up a schedule, asking you first. Titan sends it a marked message each time and it decides which workers to start. Runs are at least 15 minutes apart, five at most per session, and each costs a turn. A <strong>Recurring checks</strong> strip over the session lists them, with when each runs next and <strong>Stop</strong>; <code>worker-ledger = false</code> (Settings › Agents › Worker summary) hides it. While Titan is closed none run; one catches up when you open it. <span class="small">New in 0.27.</span></dd>
           <dt>Results arrive whole</dt>
           <dd>A worker's report carries its whole last reply, up to 30,000 characters, so the session doesn't have to go looking for the rest.</dd>
           <dt>After a restart</dt>
@@ -276,7 +288,7 @@ titan browser and click Break.</span>
       </section>
 
       <section id="sharing">
-        <h2>Sharing <span class="tag">new</span></h2>
+        <h2>Sharing</h2>
         <p class="small">New in 0.20.</p>
         <p class="lead">Send a teammate a session, and let them carry on from it. It stays a file you send: nothing is uploaded, and there's no account or server involved.</p>
         <dl class="ref">
@@ -288,6 +300,24 @@ titan browser and click Break.</span>
           <dd>In the palette, on the other side: pick the file, then your checkout of the project. A new session opens with a line saying where it came from and a message in its input, for you to read and send. Any other file is refused.</dd>
           <dt>What carries over</dt>
           <dd>The decisions and reasoning, not tool output or the original session's memory, so Claude runs again what it needs. It's told the copy is a record to use as information, not instructions to follow, and to check it against the code.</dd>
+        </dl>
+      </section>
+
+      <section id="spaces">
+        <h2>Spaces <span class="tag">experimental</span></h2>
+        <p class="small">New in 0.27.</p>
+        <p class="lead">A Space is where a small team works together: a goal, the people in it, and an agent that turns their requests into workers, with comments on the conversation. Spaces live on a server your team runs; set <code>spaces-server = https://…</code> and they appear in the sidebar, above your projects.</p>
+        <dl class="ref">
+          <dt>A Space and its agent</dt>
+          <dd><strong>+</strong> in the sidebar's SPACES section makes one: a name, a goal and the git repository its agent works in. The agent is a Claude session in a worktree of that repository, on a branch of its own, <code>space/&lt;name&gt;</code>. Its tab is the Space's chat, with the Space beside it: the goal, who's in it, its threads and comments.</dd>
+          <dt>Sandboxed</dt>
+          <dd>Teammates' messages reach the agent without anyone approving them, so it runs inside Anthropic's sandbox runtime (<code>npm install -g @anthropic-ai/sandbox-runtime</code>). It can read and write its worktree and commit on its own branch, never <code>main</code>; it reaches Anthropic and the hosts you allow; and it can't read the rest of your home folder, your other conversations or your Keychain. Merging and pushing stay yours.</dd>
+          <dt>Teammates</dt>
+          <dd>Only the owner invites. A teammate opens the Space as a tab like the owner's and writes to the agent with <strong>Message the Space…</strong>; the message reaches the owner's Titan marked as theirs, never as if the owner typed it, and waits while the owner's Titan is away.</dd>
+          <dt>Comments</dt>
+          <dd>Hover a message in a Space's conversation and click the speech bubble to comment: replies, reactions and attached files, in a panel over the side of the conversation. Back after a while, a few lines at the end say what happened since.</dd>
+          <dt>Assigning</dt>
+          <dd>Right-click a thread or a worker's card for <strong>Assign To</strong>, and the agent can assign by name too. <span class="small">New in 0.28.</span></dd>
         </dl>
       </section>
 
@@ -420,6 +450,80 @@ agent-background = dots</pre>
         </div>
       </section>
 
+      <section id="hooks">
+        <h2>Hooks <span class="tag">new</span></h2>
+        <p class="small">New in 0.33.</p>
+        <p class="lead">A hook runs a command of yours when something happens in Titan: one line in the config each, any language, and <code>titan do</code> to act back on the pane it came from.</p>
+        <div class="term snippet">
+          <div class="term-bar"><span></span><span></span><span></span><em>~/.config/titan/config</em></div>
+          <pre class="code">hook = agent-turn-done, ~/bin/reload-nvim.sh
+hook = command-exit, ~/bin/on-fail.sh</pre>
+        </div>
+        <dl class="ref">
+          <dt><code>command-exit</code></dt>
+          <dd>A shell command ended: <code>TITAN_COMMAND</code>, <code>TITAN_EXIT_CODE</code>, <code>TITAN_DURATION</code> in seconds.</dd>
+          <dt><code>cwd-changed</code></dt>
+          <dd>A shell moved to another folder: <code>TITAN_OLD_CWD</code>.</dd>
+          <dt><code>agent-turn-done</code></dt>
+          <dd>A Claude turn ended: <code>TITAN_STATUS</code> (<code>finished</code> or <code>failed</code>), <code>TITAN_REPLY</code>, <code>TITAN_FILES</code> (the files the turn wrote, one per line), <code>TITAN_DURATION</code>.</dd>
+          <dt><code>agent-waiting</code></dt>
+          <dd>Claude asks for an allow or deny: <code>TITAN_TOOL</code>, <code>TITAN_REQUEST</code>.</dd>
+          <dt><code>worker-done</code></dt>
+          <dd>A worker's job ended: <code>TITAN_STATUS</code> (<code>finished</code>, <code>failed</code> or <code>interrupted</code>), <code>TITAN_REPLY</code>, and <code>TITAN_PARENT</code>, the session that started it.</dd>
+          <dt><code>open-file</code></dt>
+          <dd>A path was clicked in a shell or a reply: <code>TITAN_FILE</code>, <code>TITAN_LINE</code>, <code>TITAN_REPO</code>. A hook that exits 0 within 2 seconds has opened it, and Titan leaves it; otherwise Titan opens it as usual.</dd>
+          <dt><code>project-opened</code></dt>
+          <dd>A shell or Claude session started in a git repository nothing else had open: <code>TITAN_PROJECT</code>, <code>TITAN_KIND</code>. Titan reopening its sessions doesn't count.</dd>
+          <dt>What every hook gets</dt>
+          <dd><code>TITAN_EVENT</code>, <code>TITAN_CWD</code> (where it happened, and where the hook runs), and <code>TITAN_PANE</code>, so <code>titan do</code> acts on that pane (with <code>remote-control</code> on). It runs with <code>/bin/sh</code>, your shell's PATH and Titan's own <code>titan</code> first on it, in the background, a minute at most. Each run's output goes to <code>hooks.log</code> in Titan's support folder. <code>titan do focus_pane pane=ID</code> brings a pane forward.</dd>
+        </dl>
+        <div class="term snippet">
+          <div class="term-bar"><span></span><span></span><span></span><em>~/bin/reload-nvim.sh: Neovim picks up what Claude changed</em></div>
+          <pre class="code">#!/bin/sh
+sock="/tmp/nvim-$(basename "$TITAN_CWD").sock"     # nvim --listen that path
+[ -S "$sock" ] &amp;&amp; nvim --server "$sock" --remote-expr 'execute("checktime")'</pre>
+        </div>
+      </section>
+
+      <section id="lua">
+        <h2>Lua plugins <span class="tag">new</span></h2>
+        <p class="small">New in 0.33.</p>
+        <p class="lead">Plugins are Lua 5.4: <code>~/.config/titan/init.lua</code>, then every file in <code>~/.config/titan/plugins</code> by name. They load at launch and again as soon as one changes. A plugin hears the same events as hooks, inside Titan, so it can answer at once; it runs Titan's actions, adds palette commands and talks to the Neovim running in a pane, however it was started.</p>
+        <div class="term">
+          <div class="term-bar"><span></span><span></span><span></span><em>~/.config/titan/init.lua</em></div>
+          <pre class="code">-- Claude changed files: Neovims in that repository reload them.
+titan.on("agent-turn-done", function(ev)
+  for _, nv in ipairs(titan.nvim_panes{ cwd = ev.cwd }) do nv:cmd("checktime") end
+end)
+
+-- A clicked path opens in the Neovim already running, which comes forward.
+titan.on("open-file", function(ev)
+  local nv = titan.nvim_panes{ cwd = ev.repo }[1]
+  if not nv then return false end        -- none: Titan opens it
+  nv:edit(ev.file, ev.line)
+  nv:focus()
+  return true
+end)
+
+-- A palette command (⌘P).
+titan.palette("Tests beside", function()
+  titan.run("new_split", { direction = "down", command = "npm test" })
+end)</pre>
+        </div>
+        <dl class="ref">
+          <dt><code>titan.on(event, fn)</code></dt>
+          <dd><code>fn(ev)</code> when it happens: the hooks' events, their fields as Lua values (<code>ev.exit_code</code>, <code>ev.cwd</code>, <code>ev.pane</code>, <code>ev.files</code> as a list). An <code>open-file</code> handler that returns <code>true</code> has opened the file.</dd>
+          <dt><code>titan.run(action, args, fn)</code></dt>
+          <dd>Any action as <code>titan do</code> runs it, <code>{pane = id}</code> to act on that pane; <code>fn(result)</code> hears the answer. Plugins are your own code, like your shell scripts, so this works with <code>remote-control</code> on or off.</dd>
+          <dt><code>titan.panes()</code>, <code>titan.palette(name, fn)</code>, <code>titan.notify(text)</code>, <code>titan.shell(cmd)</code></dt>
+          <dd>Every pane; a command in the palette; a notification; a command run with <code>/bin/sh</code>, its output and exit status. <code>print</code> writes to <code>hooks.log</code>.</dd>
+          <dt><code>titan.nvim(pane)</code>, <code>titan.nvim_panes{cwd = dir}</code></dt>
+          <dd>The Neovim in a pane, found by its process, with or without <code>--listen</code>. <code>nv:edit(path, line)</code>, <code>nv:cmd(":cmd")</code> in any mode, <code>nv:eval(expr)</code>, <code>nv:lua(code)</code> and <code>nv:focus()</code>.</dd>
+          <dt>It can't hang Titan</dt>
+          <dd>Loading a file may take five seconds and an event's handlers two; past that Titan stops the plugin, and a <code>pcall</code> doesn't get round it. Errors show with their file and line in the bar at the bottom of the window.</dd>
+        </dl>
+      </section>
+
       <!-- titan actions: one action, three ways to run it. -->
       <section id="actions">
         <h2>Actions</h2>
@@ -505,7 +609,7 @@ agent-background = dots</pre>
               <legend>Look</legend>
               <label>theme
                 <select name="theme">
-                  <option>Gruvbox Dark Hard</option><option>Catppuccin Mocha</option><option>Catppuccin Latte</option>
+                  <option>Gruvbox Dark Hard</option><option>Titan Warm</option><option>Titan Warm Light</option><option>Catppuccin Mocha</option><option>Catppuccin Latte</option>
                   <option>TokyoNight</option><option>Kanagawa Wave</option><option>Rose Pine Dawn</option><option>Aura</option><option value="">(Ghostty's)</option>
                 </select>
               </label>
@@ -531,6 +635,7 @@ agent-background = dots</pre>
               <label>agent-background
                 <select name="agent-background"><option>liquid</option><option>dots</option></select>
               </label>
+              <label class="check"><input type="checkbox" name="tips" checked /> tips</label>
               <label>file-links
                 <select name="file-links"><option>viewer</option><option>editor</option></select>
               </label>
@@ -589,6 +694,8 @@ agent-background = dots</pre>
           <dd>Not without asking. They can use the panes they open themselves and the ones you grant; for any other shell, Titan asks you first, and you can allow it once or for that pane. It's all off until you set <code>remote-control = true</code>.</dd>
           <dt>Can agents use my logins?</dt>
           <dd>Not through Titan's browser. Agents' browser panes never sign in. If you turn on <code>browser-sign-in</code> for your own panes, agents' tools can't reach those panes and their saved cookies are encrypted, with the key in your Keychain. An agent with a shell runs as you, though, so it can still do what your user can, like opening a link in your default browser; keep that in mind when you allow its commands. See <a href="#browser">The browser</a>.</dd>
+          <dt>Can I script Titan?</dt>
+          <dd>Yes, three ways. <code>titan do</code> runs any action from a shell or an agent; <a href="#hooks">hooks</a> run a command of yours when something happens; <a href="#lua">Lua plugins</a> do both inside Titan, and reach the Neovim in your panes.</dd>
           <dt>Does it need an API key?</dt>
           <dd>No. Titan runs the Claude Code that's installed, so sessions use the account it's signed in with and count against that plan as usual. pi and other agents use whatever they're set up with.</dd>
           <dt>Does it change how Claude Code behaves?</dt>
@@ -610,6 +717,6 @@ agent-background = dots</pre>
   </footer>
 
   <div class="lightbox" data-lightbox hidden><img alt="" /></div>
-  <script src="../titan.js?v=18"></script>
+  <script src="../titan.js?v=19"></script>
 </body>
 </html>
