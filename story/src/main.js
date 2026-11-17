@@ -7,6 +7,11 @@ import { buildGlobe, latLon } from './scenes/globe.js';
 import { buildSweden } from './scenes/sweden.js';
 import { buildTitan } from './scenes/titan.js';
 import { buildNow } from './scenes/now.js';
+import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
+import { OutputPass } from 'three/examples/jsm/postprocessing/OutputPass.js';
+import { N8AOPass } from 'n8ao';
+import { LOW_POWER } from './scenes/common.js';
 
 const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const mobileQuery = matchMedia('(max-width: 900px)');
@@ -50,21 +55,25 @@ const P = (o) => ({
   sun: new THREE.Color(o.sun),
   hemiSky: new THREE.Color(o.hemiSky),
   hemiGround: new THREE.Color(o.hemiGround),
+  sunDir: new THREE.Vector3(...o.sunDir).normalize(),
 });
+// sunDir points from the scene towards the sun; glow is how much the sky
+// brightens around it; env is how strongly the sky lights every surface.
 const PALETTES = {
-  sunset: P({ skyTop: '#46507e', skyBottom: '#f2b28a', fogNear: 110, fogFar: 330, sun: '#ffd6ad', sunI: 2.3, hemiSky: '#ffe2c8', hemiGround: '#46536e', hemiI: 1.15, stars: 0, sunDisc: 1, aurora: 0 }),
-  day: P({ skyTop: '#86acd4', skyBottom: '#dfe9f1', fogNear: 100, fogFar: 260, sun: '#fff7ec', sunI: 2.4, hemiSky: '#e6f0f8', hemiGround: '#6b7560', hemiI: 1.25, stars: 0, sunDisc: 0, aurora: 0 }),
-  golden: P({ skyTop: '#8d9cc4', skyBottom: '#f1dfc6', fogNear: 100, fogFar: 260, sun: '#ffe6c2', sunI: 2.3, hemiSky: '#fff0dc', hemiGround: '#6a5a48', hemiI: 1.25, stars: 0, sunDisc: 0, aurora: 0 }),
-  space: P({ skyTop: '#070b16', skyBottom: '#121c33', fogNear: 120, fogFar: 280, sun: '#bcd4ff', sunI: 1.1, hemiSky: '#8fa8ff', hemiGround: '#101828', hemiI: 0.6, stars: 0.8, sunDisc: 0, aurora: 0 }),
-  nordic: P({ skyTop: '#0b1528', skyBottom: '#26425e', fogNear: 100, fogFar: 260, sun: '#a9c2ff', sunI: 1.2, hemiSky: '#a9c2ff', hemiGround: '#1d2735', hemiI: 1.1, stars: 0.7, sunDisc: 0, aurora: 1 }),
-  titan: P({ skyTop: '#0b0f1c', skyBottom: '#20264a', fogNear: 110, fogFar: 270, sun: '#c8d0ff', sunI: 1.1, hemiSky: '#a9b8ff', hemiGround: '#141a30', hemiI: 0.9, stars: 0.6, sunDisc: 0, aurora: 0 }),
-  dusk: P({ skyTop: '#100e1c', skyBottom: '#2c2446', fogNear: 110, fogFar: 270, sun: '#d6c8ff', sunI: 1.3, hemiSky: '#b9a8ff', hemiGround: '#1a1530', hemiI: 0.9, stars: 0.5, sunDisc: 0, aurora: 0 }),
+  sunset: P({ skyTop: '#24306b', skyBottom: '#ff8b4d', fogNear: 160, fogFar: 420, sun: '#ffb877', sunI: 3.2, sunDir: [-0.208, 0.075, -0.978], glow: 1, env: 0.85, hemiSky: '#ffd9b8', hemiGround: '#3c4660', hemiI: 0.35, stars: 0, aurora: 0 }),
+  day: P({ skyTop: '#3f79c4', skyBottom: '#cfe0ee', fogNear: 90, fogFar: 420, sun: '#fff1de', sunI: 4.4, sunDir: [0.55, 0.5, 0.6], glow: 0.25, env: 1.25, hemiSky: '#e6f0f8', hemiGround: '#6b7560', hemiI: 0.3, stars: 0, aurora: 0 }),
+  golden: P({ skyTop: '#7489bf', skyBottom: '#f2d3ab', fogNear: 110, fogFar: 320, sun: '#ffcf96', sunI: 3.6, sunDir: [-0.85, 0.3, 0.42], glow: 0.7, env: 0.75, hemiSky: '#fff0dc', hemiGround: '#6a5a48', hemiI: 0.3, stars: 0, aurora: 0 }),
+  space: P({ skyTop: '#070b16', skyBottom: '#121c33', fogNear: 120, fogFar: 280, sun: '#bcd4ff', sunI: 1.1, sunDir: [0.5, 0.5, 0.7], glow: 0, env: 0.3, hemiSky: '#8fa8ff', hemiGround: '#101828', hemiI: 0.6, stars: 0.8, aurora: 0 }),
+  nordic: P({ skyTop: '#07101f', skyBottom: '#1e3a56', fogNear: 110, fogFar: 300, sun: '#a6bde9', sunI: 1.1, sunDir: [0.35, 0.55, -0.75], glow: 0.18, env: 0.7, hemiSky: '#a9c2ff', hemiGround: '#1d2735', hemiI: 0.45, stars: 0.75, aurora: 1 }),
+  titan: P({ skyTop: '#0b0f1c', skyBottom: '#20264a', fogNear: 110, fogFar: 270, sun: '#c8d0ff', sunI: 1.1, sunDir: [0.3, 0.6, 0.7], glow: 0, env: 0.5, hemiSky: '#a9b8ff', hemiGround: '#141a30', hemiI: 0.9, stars: 0.6, aurora: 0 }),
+  dusk: P({ skyTop: '#100e1c', skyBottom: '#2c2446', fogNear: 110, fogFar: 270, sun: '#d6c8ff', sunI: 1.3, sunDir: [0.3, 0.6, 0.7], glow: 0, env: 0.5, hemiSky: '#b9a8ff', hemiGround: '#1a1530', hemiI: 0.9, stars: 0.5, aurora: 0 }),
 };
-const NUM_KEYS = ['fogNear', 'fogFar', 'sunI', 'hemiI', 'stars', 'sunDisc', 'aurora'];
+const NUM_KEYS = ['fogNear', 'fogFar', 'sunI', 'hemiI', 'stars', 'aurora', 'glow', 'env'];
 const COLOR_KEYS = ['skyTop', 'skyBottom', 'fog', 'sun', 'hemiSky', 'hemiGround'];
 function mixPalette(out, a, b, t) {
   for (const k of NUM_KEYS) out[k] = a[k] + (b[k] - a[k]) * t;
   for (const k of COLOR_KEYS) out[k].copy(a[k]).lerp(b[k], t);
+  out.sunDir.copy(a.sunDir).lerp(b.sunDir, t).normalize();
   return out;
 }
 
@@ -84,19 +93,19 @@ function station(look, dist, pitch, yaw, palette) {
 }
 const STATIONS = {
   hero: station(v(-17, 4, -6), 104, 9, 6, 'sunset'),
-  kaukira: station(v(-1, 2, 0), 96, 14, 20, 'sunset'),
-  university: station(v(X.university, 3, 0), 100, 18, -14, 'day'),
-  teacher: station(v(X.classroom, 3, -1), 94, 21, 12, 'golden'),
+  kaukira: station(v(-1, 2.5, 0), 74, 8, 22, 'sunset'),
+  university: station(v(X.university, 5, -5), 72, 5, -18, 'day'),
+  teacher: station(v(X.classroom - 3, 3.8, -4), 45, 4, 9, 'golden'),
   remote: { pos: G.clone().add(latLon(22, -80, 82)), look: G, palette: 'space' },
   move: { pos: G.clone().add(latLon(40, -40, 86)), look: G, palette: 'space' },
-  sweden: station(v(X.sweden, 3, 0), 102, 17, 14, 'nordic'),
+  sweden: station(v(X.sweden, 5.5, -2), 82, 5, 16, 'nordic'),
   titan: station(v(X.titan, 5, 0), 62, 4, -6, 'titan'),
   now: station(v(X.now, 3.5, 0), 74, 5, 0, 'dusk'),
 };
 const keys = chapters.map((s) => STATIONS[s.dataset.station]);
 // The hero frames the village to the right of the big name on wide screens,
 // and centred above it on phones.
-const HERO = { wide: station(v(-9, 4, -6), 108, 9, 6, 'sunset'), narrow: station(v(-1, 4, -6), 112, 9, 6, 'sunset') };
+const HERO = { wide: station(v(-9, 5, -8), 100, 5, 8, 'sunset'), narrow: station(v(-3, 5, -8), 104, 5, 8, 'sunset') };
 function frameHero() {
   const h = mobileQuery.matches ? HERO.narrow : HERO.wide;
   STATIONS.hero.pos.copy(h.pos);
@@ -104,10 +113,14 @@ function frameHero() {
 }
 
 function start(renderer) {
-  let dpr = Math.min(devicePixelRatio, 2);
+  // The 3D is drawn a little below full resolution; the text over it stays sharp.
+  let dpr = Math.min(devicePixelRatio, 1.5);
+  let aoAllowed = !LOW_POWER;
   renderer.setPixelRatio(dpr);
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.0;
+  renderer.toneMappingExposure = 0.95;
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.VSMShadowMap;
 
   const scene = new THREE.Scene();
   const palette = mixPalette(P(PALETTES.sunset), PALETTES.sunset, PALETTES.sunset, 0);
@@ -117,14 +130,30 @@ function start(renderer) {
   const skyMat = new THREE.ShaderMaterial({
     side: THREE.BackSide,
     depthWrite: false,
-    uniforms: { top: { value: palette.skyTop.clone() }, bottom: { value: palette.skyBottom.clone() } },
+    uniforms: {
+      top: { value: palette.skyTop.clone() },
+      bottom: { value: palette.skyBottom.clone() },
+      sunDir: { value: palette.sunDir.clone() },
+      sunColor: { value: palette.sun.clone() },
+      glow: { value: 0 },
+    },
     vertexShader: `varying vec3 vP; void main(){ vP = normalize(position); gl_Position = projectionMatrix*modelViewMatrix*vec4(position,1.0); }`,
-    fragmentShader: `varying vec3 vP; uniform vec3 top; uniform vec3 bottom;
-      void main(){ float h = pow(smoothstep(0.0, 0.5, vP.y), 0.8); gl_FragColor = vec4(mix(bottom, top, h), 1.0);
+    fragmentShader: `varying vec3 vP; uniform vec3 top; uniform vec3 bottom; uniform vec3 sunDir; uniform vec3 sunColor; uniform float glow;
+      void main(){
+        vec3 d = normalize(vP);
+        float h = pow(smoothstep(0.0, 0.34, d.y), 0.8);
+        vec3 col = mix(bottom, top, h);
+        float s = max(dot(d, sunDir), 0.0);
+        // A wide warm glow, a tighter halo and the disc itself.
+        col += sunColor * glow * (0.18 * pow(s, 8.0) + 0.5 * pow(s, 90.0)) * (1.0 - h * 0.5);
+        col += sunColor * glow * 8.0 * smoothstep(0.99982, 0.9999, s);
+        // Below the horizon fades to the haze colour.
+        col = mix(col, bottom, smoothstep(0.0, -0.2, d.y));
+        gl_FragColor = vec4(col, 1.0);
         #include <colorspace_fragment>
       }`,
   });
-  const sky = new THREE.Mesh(new THREE.SphereGeometry(600, 32, 16), skyMat);
+  const sky = new THREE.Mesh(new THREE.SphereGeometry(600, 48, 24), skyMat);
   sky.renderOrder = -2;
   scene.add(sky);
 
@@ -143,7 +172,32 @@ function start(renderer) {
 
   const hemi = new THREE.HemisphereLight(palette.hemiSky, palette.hemiGround, palette.hemiI);
   const sun = new THREE.DirectionalLight(palette.sun, palette.sunI);
+  sun.castShadow = true;
+  sun.shadow.mapSize.set(LOW_POWER ? 1024 : 2048, LOW_POWER ? 1024 : 2048);
+  // Shadows are redrawn every frame while the camera moves, and less often
+  // when it rests (never on phones).
+  sun.shadow.autoUpdate = false;
+  Object.assign(sun.shadow.camera, { left: -42, right: 42, top: 42, bottom: -42, near: 1, far: 260 });
+  sun.shadow.radius = 6;
+  sun.shadow.blurSamples = 12;
+  sun.shadow.bias = -0.0004;
   scene.add(hemi, sun, sun.target);
+
+  // The sky also lights the scene: render it into an environment map that
+  // follows the palette.
+  const pmrem = new THREE.PMREMGenerator(renderer);
+  const envScene = new THREE.Scene();
+  envScene.add(new THREE.Mesh(new THREE.SphereGeometry(50, 48, 24), skyMat));
+  let envRT = null;
+  let envKey = '';
+  function updateEnvironment(key) {
+    if (key === envKey) return;
+    envKey = key;
+    const next = pmrem.fromScene(envScene, 0, 0.1, 100);
+    scene.environment = next.texture;
+    envRT?.dispose();
+    envRT = next;
+  }
 
   const worlds = [
     [buildKaukira(), X.kaukira],
@@ -172,11 +226,28 @@ function start(renderer) {
   });
   const labelWindow = { kaukira: ['remote', 'move'], usa: ['remote', 'remote'], goteborg: ['move', 'move'] };
 
+  // Soft contact shadows where things meet (ambient occlusion), then the
+  // tone mapping and colour conversion.
+  const composer = new EffectComposer(renderer, new THREE.WebGLRenderTarget(1, 1, { type: THREE.HalfFloatType }));
+  const plain = new RenderPass(scene, camera);
+  composer.addPass(plain);
+  const ao = new N8AOPass(scene, camera, 1, 1);
+  ao.configuration.gammaCorrection = false;
+  ao.configuration.aoRadius = 2.4;
+  ao.configuration.distanceFalloff = 1;
+  ao.configuration.intensity = 2.4;
+  ao.configuration.halfRes = true;
+  ao.setQualityMode('Performance');
+  composer.addPass(ao);
+  composer.addPass(new OutputPass());
+
   let W = 1, H = 1;
   function resize() {
     W = innerWidth;
     H = innerHeight;
     renderer.setSize(W, H, false);
+    composer.setPixelRatio(dpr);
+    composer.setSize(W, H);
     camera.aspect = W / H;
     // Tall screens get a slightly wider lens so the scenes still fit.
     camera.fov = camera.aspect < 0.85 ? FOV / Math.pow(camera.aspect / 0.85, 0.7) : FOV;
@@ -196,11 +267,11 @@ function start(renderer) {
   let t = 0;
   let last = performance.now();
   let slowFrames = 0;
+  let frameNo = 0;
   const pos = new THREE.Vector3();
   const look = new THREE.Vector3();
   const tmp = new THREE.Vector3();
   const world = new THREE.Vector3();
-  const lightOffset = new THREE.Vector3(-30, 50, 30);
   const smooth = (e0, e1, x) => {
     const k = THREE.MathUtils.clamp((x - e0) / (e1 - e0), 0, 1);
     return k * k * (3 - 2 * k);
@@ -213,17 +284,25 @@ function start(renderer) {
     last = now;
 
     // If frames are slow for a while, render fewer pixels.
-    if (rawDt > 0.024 && rawDt < 0.2) slowFrames++;
+    if (rawDt > 0.022 && rawDt < 0.2) slowFrames++;
     else slowFrames = Math.max(0, slowFrames - 1);
-    if (slowFrames > 40 && dpr > 1) {
-      dpr = Math.max(1, dpr - 0.25);
-      renderer.setPixelRatio(dpr);
-      renderer.setSize(W, H, false);
+    if (slowFrames > 40) {
+      if (dpr > 1) {
+        dpr = Math.max(1, dpr - 0.25);
+        renderer.setPixelRatio(dpr);
+        renderer.setSize(W, H, false);
+        composer.setPixelRatio(dpr);
+        composer.setSize(W, H);
+      } else {
+        aoAllowed = false; // last resort: drop the contact-shadow pass
+      }
       slowFrames = 0;
     }
 
     t += dt * (reduceMotion ? 0.25 : 1);
     const target = scrollF();
+    frameNo++;
+    if (Math.abs(target - f) > 0.0005 || (!LOW_POWER && frameNo % 3 === 0)) sun.shadow.needsUpdate = true;
     // Follow the scroll closely; just enough smoothing to hide wheel steps.
     f = reduceMotion ? target : f + (target - f) * (1 - Math.exp(-dt * 12));
     if (Math.abs(target - f) < 0.0005) f = target;
@@ -246,6 +325,11 @@ function start(renderer) {
     mixPalette(palette, PALETTES[a.palette], PALETTES[b.palette], e);
     skyMat.uniforms.top.value.copy(palette.skyTop);
     skyMat.uniforms.bottom.value.copy(palette.skyBottom);
+    skyMat.uniforms.sunDir.value.copy(palette.sunDir);
+    skyMat.uniforms.sunColor.value.copy(palette.sun);
+    skyMat.uniforms.glow.value = palette.glow;
+    updateEnvironment(f.toFixed(2));
+    scene.environmentIntensity = palette.env;
     scene.fog.color.copy(palette.fog);
     // A brief haze between chapters; scenes swap while it is thick.
     const haze = a === b ? 0 : Math.pow(Math.sin(Math.PI * e), 1.5);
@@ -257,7 +341,7 @@ function start(renderer) {
     sun.color.copy(palette.sun);
     sun.intensity = palette.sunI;
     sun.target.position.copy(look);
-    sun.position.copy(look).add(lightOffset);
+    sun.position.copy(look).addScaledVector(palette.sunDir, 120);
     sky.position.copy(camera.position);
     stars.position.copy(camera.position);
     stars.material.opacity = palette.stars;
@@ -284,8 +368,14 @@ function start(renderer) {
 
     setActive(Math.round(f));
 
-    renderer.render(scene, camera);
+    // Contact shadows matter on the ground scenes, not on the globe or screens.
+    // N8AO renders the scene itself; the plain pass is only for when it's off.
+    ao.enabled = aoAllowed && (f < idx.remote - 0.5 || (f > idx.move + 0.5 && f < idx.titan - 0.5));
+    plain.enabled = !ao.enabled;
+    composer.render(dt);
   }
+  if (import.meta.env.DEV) window.__dbg = { ao, plain, sun, renderer, composer, scene, setDpr: (d) => { dpr = d; renderer.setPixelRatio(d); renderer.setSize(W, H, false); composer.setPixelRatio(d); composer.setSize(W, H); } };
+  sun.shadow.needsUpdate = true;
   requestAnimationFrame(frame);
   document.documentElement.classList.add('ready');
 }

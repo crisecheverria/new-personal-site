@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { rng, mat, mesh, canvasTexture, palm, pine, gradCap, book, glowSprite } from './common.js';
+import { rng, mat, mesh, canvasTexture, glowSprite } from './common.js';
 
 const SESSION = [
   { p: '$ ', text: 'whoami' },
@@ -13,7 +13,7 @@ const SESSION = [
   { p: '$ ', text: '' },
 ];
 
-// Today: a floating terminal with the things that came along on the way.
+// Today: a floating terminal.
 export function buildNow() {
   const r = rng(77);
   const group = new THREE.Group();
@@ -64,24 +64,6 @@ export function buildNow() {
   monolith.position.y = 4;
   group.add(monolith);
 
-  // Mementos orbiting the terminal: a palm, a pine, a cap, a book, a canoe.
-  const orbiters = [];
-  const items = [
-    (() => { const p = palm(r, 3); p.scale.setScalar(0.6); return p; })(),
-    (() => { const p = pine(r, 3); p.scale.setScalar(0.7); return p; })(),
-    gradCap(),
-    book('#d1a23f'),
-    mesh(new THREE.SphereGeometry(1, 12, 6, 0, Math.PI * 2, Math.PI / 2, Math.PI / 2), mat('#6a4528', { side: THREE.DoubleSide }), { s: [1.4, 0.32, 0.36] }),
-    mesh(new THREE.IcosahedronGeometry(0.6, 0), mat('#8ff0c4', { emissive: '#2f8f6a', emissiveIntensity: 0.6 })),
-  ];
-  items.forEach((it, i) => {
-    const holder = new THREE.Group();
-    holder.add(it);
-    holder.userData = { a: (i / items.length) * Math.PI * 2, rad: 12 + (i % 2) * 2, y: 1 + (i % 3) * 2.6, spin: 0.3 + r() * 0.5 };
-    group.add(holder);
-    orbiters.push(holder);
-  });
-
   // Floating dust.
   const N = 500;
   const pos = new Float32Array(N * 3);
@@ -107,13 +89,6 @@ export function buildNow() {
     }
     monolith.position.y = 4 + Math.sin(t * 0.8) * 0.25;
     monolith.rotation.y = Math.sin(t * 0.3) * 0.06;
-    for (const o of orbiters) {
-      const u = o.userData;
-      const a = u.a + t * 0.12;
-      // A tilted ring: low in front of the screen, high behind it.
-      o.position.set(Math.cos(a) * u.rad, 4 - Math.sin(a) * 8 + Math.sin(t + u.a) * 0.4, Math.sin(a) * u.rad * 0.5 - 1);
-      o.rotation.y = t * u.spin;
-    }
     dust.rotation.y = t * 0.01;
   }
 
