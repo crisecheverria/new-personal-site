@@ -96,7 +96,7 @@ const STATIONS = {
 const keys = chapters.map((s) => STATIONS[s.dataset.station]);
 // The hero frames the village to the right of the big name on wide screens,
 // and centred above it on phones.
-const HERO = { wide: station(v(-17, 4, -6), 104, 9, 6, 'sunset'), narrow: station(v(-1, 4, -6), 112, 9, 6, 'sunset') };
+const HERO = { wide: station(v(-9, 4, -6), 108, 9, 6, 'sunset'), narrow: station(v(-1, 4, -6), 112, 9, 6, 'sunset') };
 function frameHero() {
   const h = mobileQuery.matches ? HERO.narrow : HERO.wide;
   STATIONS.hero.pos.copy(h.pos);
