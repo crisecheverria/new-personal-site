@@ -1,10 +1,7 @@
-# Personal Site
+# cristianecheverria.com
 
-A Neovim-themed personal site built with vanilla HTML, CSS, and JS.
+Served by GitHub Pages from the root of `main` (no build step on the server).
 
-## Deploy
-
-Static site — deploy directly to Netlify by linking your GitHub repo. No build step needed.
-
-- **Build command:** _(leave blank)_
-- **Publish directory:** `/`
+- `/` — the story homepage. Source in `story/`; run `npm run site` there to rebuild `index.html` and `assets/`.
+- `/titan` — Titan's page and docs.
+- `/notas` — Notas's page.
