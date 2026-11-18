@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { rng, mat, mesh, canvasTexture, glowSprite } from './common.js';
+import { rng, glowSprite } from './common.js';
 
 const SESSION = [
   { p: '$ ', text: 'whoami' },
@@ -13,56 +13,26 @@ const SESSION = [
   { p: '$ ', text: '' },
 ];
 
-// Today: a floating terminal.
+const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+// Today: a terminal. The window itself is HTML placed over the scene (so its
+// text stays sharp); the scene supplies the glow and dust behind it.
 export function buildNow() {
   const r = rng(77);
   const group = new THREE.Group();
 
-  const total = SESSION.reduce((n, l) => n + l.text.length + 4, 0);
-  const term = canvasTexture(1024, 640, (ctx, w, h, typed = 0, blink = true) => {
-    ctx.fillStyle = '#12111c';
-    ctx.fillRect(0, 0, w, h);
-    ctx.fillStyle = '#1d1b2c';
-    ctx.fillRect(0, 0, w, 54);
-    ['#ff6b6b', '#ffcf5c', '#5cd18a'].forEach((c, i) => {
-      ctx.fillStyle = c;
-      ctx.beginPath();
-      ctx.arc(34 + i * 30, 27, 9, 0, Math.PI * 2);
-      ctx.fill();
-    });
-    ctx.fillStyle = '#8f8aa8';
-    ctx.font = '22px "JetBrains Mono", monospace';
-    ctx.fillText('~ — zsh', w / 2 - 50, 35);
-    ctx.font = '30px "JetBrains Mono", monospace';
-    let left = typed;
-    let y = 110;
-    let cursor = null;
-    for (const l of SESSION) {
-      if (left <= 0) break;
-      const shown = l.text.slice(0, Math.max(0, left - 2));
-      left -= l.text.length + 4;
-      ctx.fillStyle = '#8ff0c4';
-      ctx.fillText(l.p, 40, y);
-      const px = 40 + ctx.measureText(l.p).width;
-      ctx.fillStyle = l.p ? '#f2eee3' : '#b7b0d6';
-      ctx.fillText(shown, px, y);
-      cursor = [px + ctx.measureText(shown).width + 4, y];
-      y += 54;
-    }
-    if (cursor && blink) {
-      ctx.fillStyle = '#8ff0c4';
-      ctx.fillRect(cursor[0], cursor[1] - 26, 16, 32);
-    }
-  });
+  const el = document.createElement('div');
+  el.className = 'mock term';
+  el.innerHTML = '<div class="mock-win"><div class="mock-bar"><i></i><i></i><i></i><span>~ — zsh</span></div><pre class="term-body"></pre></div>';
+  document.getElementById('screens').appendChild(el);
+  const body = el.querySelector('.term-body');
 
-  const monolith = new THREE.Group();
-  monolith.add(mesh(new THREE.BoxGeometry(17, 11, 0.7), mat('#262433', { roughness: 0.5, metalness: 0.3 })));
-  monolith.add(mesh(new THREE.PlaneGeometry(16.2, 10.15), new THREE.MeshBasicMaterial({ map: term.texture, toneMapped: false }), { z: 0.36 }));
-  const glow = glowSprite('#8f7bff', 40, 0.35);
+  const anchor = new THREE.Group();
+  anchor.position.y = 4;
+  const glow = glowSprite('#8f7bff', 44, 0.4);
   glow.position.z = -2;
-  monolith.add(glow);
-  monolith.position.y = 4;
-  group.add(monolith);
+  anchor.add(glow);
+  group.add(anchor);
 
   // Floating dust.
   const N = 500;
@@ -77,20 +47,26 @@ export function buildNow() {
   const dust = new THREE.Points(dustGeo, new THREE.PointsMaterial({ color: '#b9a8ff', size: 0.12, transparent: true, opacity: 0.7, depthWrite: false }));
   group.add(dust);
 
-  let lastKey = '';
+  const total = SESSION.reduce((n, l) => n + l.text.length + 4, 0);
+  let lastTyped = -1;
   function update(t, dt, info) {
-    const start = info.idx.now - 0.6;
-    const typed = Math.floor(THREE.MathUtils.clamp((info.f - start) / 0.6, 0, 1) * total);
-    const blink = Math.floor(t * 2) % 2 === 0;
-    const key = typed + ':' + blink;
-    if (key !== lastKey) {
-      lastKey = key;
-      term.redraw(typed, blink);
+    // The session types itself out as the chapter scrolls in.
+    const typed = Math.floor(THREE.MathUtils.clamp((info.f - (info.idx.now - 0.4)) / 0.35, 0, 1) * total);
+    if (typed !== lastTyped) {
+      lastTyped = typed;
+      let left = typed;
+      const rows = [];
+      for (const l of SESSION) {
+        if (left <= 0) break;
+        const shown = l.text.slice(0, Math.max(0, left - 2));
+        left -= l.text.length + 4;
+        rows.push(`<span class="p">${l.p}</span><span class="${l.p ? 'cmd' : 'out'}">${esc(shown)}</span>`);
+      }
+      body.innerHTML = rows.join('\n') + '<i class="caret"></i>';
     }
-    monolith.position.y = 4 + Math.sin(t * 0.8) * 0.25;
-    monolith.rotation.y = Math.sin(t * 0.3) * 0.06;
+    anchor.position.y = 4 + Math.sin(t * 0.8) * 0.2;
     dust.rotation.y = t * 0.01;
   }
 
-  return { group, update, radius: 40 };
+  return { group, update, overlay: { el, anchor, width: 17, station: 'now' } };
 }

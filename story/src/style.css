@@ -60,6 +60,88 @@ a { color: inherit; }
 }
 
 #labels { position: fixed; inset: 0; z-index: 2; pointer-events: none; }
+
+/* ── HTML windows placed in the scene (editor, terminal) ────────────────── */
+
+#screens { position: fixed; inset: 0; z-index: 1; pointer-events: none; overflow: hidden; }
+.mock {
+  position: absolute;
+  left: 0;
+  top: 0;
+  visibility: hidden;
+  opacity: 0;
+  transform-origin: 50% 50%;
+  will-change: transform, opacity;
+}
+.mock-win {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: 14px;
+  background: #14151b;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 50px 140px -30px rgba(125, 107, 255, 0.55), 0 20px 50px -20px rgba(0, 0, 0, 0.7);
+  color: #d7d4cc;
+  font: 400 13px/1.5 var(--mono);
+}
+.mock-bar {
+  flex: none;
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  height: 36px;
+  padding: 0 14px;
+  background: #1b1c25;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+.mock-bar i { width: 11px; height: 11px; border-radius: 50%; background: #ff6b6b; }
+.mock-bar i:nth-child(2) { background: #ffcf5c; }
+.mock-bar i:nth-child(3) { background: #5cd18a; }
+.mock-bar span { position: absolute; left: 0; right: 0; text-align: center; font: 500 12px/1 var(--sans); color: #6c6d78; }
+
+.ide { width: 880px; height: 538px; }
+.ide .mock-win { transform: perspective(1800px) rotateY(-4deg); }
+.ide-body { flex: 1; min-height: 0; display: grid; grid-template-columns: 140px 1fr 288px; }
+.ide-tree { padding: 12px 0; background: #191a22; font-size: 12px; color: #6c6d78; }
+.ide-tree { overflow: hidden; }
+.ide-tree p { margin: 0; padding: 4px 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ide-tree p.in { padding-left: 24px; }
+.ide-tree p.open { color: #d7d4cc; background: rgba(185, 171, 255, 0.14); }
+.ide-code { min-width: 0; overflow: hidden; }
+.ide-tab { height: 30px; display: flex; align-items: center; padding: 0 14px; background: #20212b; font: 500 12px/1 var(--sans); color: #d7d4cc; }
+.ide-lines { padding: 10px 0; white-space: pre; font-size: 13px; line-height: 23px; }
+.ide-lines div { padding-right: 10px; }
+.ide-lines .ln { display: inline-block; width: 34px; padding-right: 12px; text-align: right; color: #55566a; }
+.ide-lines .flagged { background: rgba(255, 120, 120, 0.13); }
+.ide-lines .added { background: rgba(120, 220, 150, 0.14); }
+.ide-lines .k { color: #c3a6ff; }
+.ide-lines .s { color: #9be3a8; }
+.ide-lines .f { color: #8cc8ff; }
+.ide-lines .n { color: #ffbf80; }
+.ide-chat { display: flex; flex-direction: column; background: #191a22; border-left: 1px solid rgba(255, 255, 255, 0.07); font: 400 13px/1.5 var(--sans); }
+.chat-head { display: flex; align-items: center; gap: 8px; height: 30px; padding: 0 14px; font-weight: 600; color: #d7d4cc; }
+.chat-head b { width: 8px; height: 8px; border-radius: 50%; background: #b9abff; }
+.chat-log { flex: 1; padding: 6px 14px; }
+.chat-log > * { margin: 0 0 10px; }
+.chat-log .you { margin-left: 22px; padding: 8px 11px; border-radius: 10px; background: rgba(185, 171, 255, 0.16); }
+.chat-log .note { color: #6c6d78; }
+.chat-log .ai.typing span::after { content: ''; display: inline-block; width: 6px; height: 13px; margin-left: 2px; vertical-align: -2px; background: #b9abff; animation: caret 1s steps(1) infinite; }
+.chat-log .diff { padding: 9px 11px; border-radius: 8px; background: #111218; font: 400 11.5px/1.6 var(--mono); white-space: pre; overflow: hidden; }
+.chat-log .del { color: #ff8f8f; }
+.chat-log .add { color: #8fe3a6; }
+.chat-log .ok { color: #8fe3a6; }
+.chat-input { margin: 0 14px 14px; padding: 9px 12px; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 9px; color: #6c6d78; }
+
+.term { width: 760px; height: 470px; }
+.term .mock-win { background: #12111c; box-shadow: 0 50px 140px -30px rgba(143, 123, 255, 0.5), 0 20px 50px -20px rgba(0, 0, 0, 0.7); }
+.term-body { flex: 1; margin: 0; padding: 22px 26px; font: 400 17px/2 var(--mono); white-space: pre-wrap; }
+.term-body .p { color: #8ff0c4; }
+.term-body .cmd { color: #f2eee3; }
+.term-body .out { color: #b7b0d6; }
+.caret { display: inline-block; width: 9px; height: 19px; margin-left: 2px; vertical-align: -3px; background: #8ff0c4; animation: caret 1s steps(1) infinite; }
+@keyframes caret { 50% { opacity: 0; } }
 .pin-label {
   position: absolute;
   left: 0;
@@ -394,6 +476,16 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outlin
     background: linear-gradient(180deg, rgba(9, 9, 11, 0.55) 0%, rgba(9, 9, 11, 0) 13%, rgba(9, 9, 11, 0) 34%, rgba(9, 9, 11, 0.86) 58%, rgba(9, 9, 11, 0.96) 100%);
   }
   .credits { display: none; }
+  /* Phones: a compact editor (a code excerpt above the agent's answer) and a
+     narrower terminal, so the text stays readable. */
+  .ide { width: 460px; height: auto; }
+  .ide .mock-win { transform: none; }
+  .ide-body { display: block; }
+  .ide-tree, .chat-log .note, .chat-log .diff, .chat-input { display: none; }
+  .ide-lines div:nth-child(-n + 5), .ide-lines div:nth-child(n + 13) { display: none; }
+  .ide-chat { border-left: 0; border-top: 1px solid rgba(255, 255, 255, 0.07); min-height: 118px; }
+  .term { width: 440px; height: auto; }
+  .term-body { min-height: 250px; font-size: 12.5px; line-height: 1.9; padding: 14px 18px; white-space: pre; overflow: hidden; }
   .chapter { align-items: flex-end; min-height: 100vh; min-height: 100svh; padding: 46vh 0 9vh; }
   .chapter.tall { min-height: 100vh; }
   .chapter[data-num]::before { display: none; }
@@ -414,6 +506,13 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outlin
 }
 
 @media (max-width: 900px) {
-  /* The long job list scrolls up over the scene; give it its own backing. */
-  .chapter.tall .inner { width: auto; margin: 0 -22px; padding: 26px 22px 8px; background: linear-gradient(180deg, rgba(9, 9, 11, 0) 0, rgba(9, 9, 11, 0.9) 60px); }
+  /* The text block carries its own dark backing, so whatever it scrolls
+     over (the scene, the editor, the terminal) is covered. */
+  .chapter:not(.hero) .inner {
+    flex: none;
+    width: calc(100% + 2 * var(--pad));
+    margin: 0 calc(-1 * var(--pad));
+    padding: 40px var(--pad) 16px;
+    background: linear-gradient(180deg, rgba(11, 11, 13, 0) 0, #0b0b0d 26px);
+  }
 }

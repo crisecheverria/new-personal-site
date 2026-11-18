@@ -27,7 +27,14 @@ function readingLine() {
   return innerHeight * 0.5;
 }
 function measure() {
-  restY = chapters.map((c) => {
+  const maxScroll = document.documentElement.scrollHeight - innerHeight;
+  restY = chapters.map((c, i) => {
+    // Phones: a chapter rests with its text starting halfway down the screen,
+    // which leaves the top half to the scene.
+    if (mobileQuery.matches && i > 0) {
+      const top = c.querySelector('.inner').getBoundingClientRect().top + scrollY;
+      return Math.min(maxScroll, top - innerHeight * 0.5);
+    }
     const r = c.getBoundingClientRect();
     return r.top + scrollY + r.height / 2 - readingLine();
   });
@@ -99,8 +106,8 @@ const STATIONS = {
   remote: { pos: G.clone().add(latLon(22, -80, 82)), look: G, palette: 'space' },
   move: { pos: G.clone().add(latLon(40, -40, 86)), look: G, palette: 'space' },
   sweden: station(v(X.sweden, 5.5, -2), 82, 5, 16, 'nordic'),
-  titan: station(v(X.titan, 5, 0), 62, 4, -6, 'titan'),
-  now: station(v(X.now, 3.5, 0), 74, 5, 0, 'dusk'),
+  titan: station(v(X.titan, 5.4, 0), 50, 3, -4, 'titan'),
+  now: station(v(X.now, 4, 0), 48, 3, 0, 'dusk'),
 };
 const keys = chapters.map((s) => STATIONS[s.dataset.station]);
 // The hero frames the village to the right of the big name on wide screens,
@@ -214,6 +221,11 @@ function start(renderer) {
   });
   const globe = worlds[3];
 
+  // Some scenes show an HTML window (editor, terminal) that the camera places
+  // over the canvas, so its text is drawn by the browser and stays sharp.
+  const overlays = worlds.filter((w) => w.overlay).map((w) => ({ ...w.overlay, baseWidth: 1, shown: false }));
+  const measureOverlays = () => { for (const o of overlays) o.baseWidth = o.el.offsetWidth || 1; };
+
   // Globe labels as HTML over the scene.
   const labelsEl = document.getElementById('labels');
   const labels = Object.entries(globe.pins).map(([key, p]) => {
@@ -258,6 +270,7 @@ function start(renderer) {
     camera.updateProjectionMatrix();
     frameHero();
     measure();
+    measureOverlays();
   }
   addEventListener('resize', resize);
   resize();
@@ -350,6 +363,27 @@ function start(renderer) {
     for (const w of worlds) {
       w.group.visible = Math.abs(camera.position.x - w.group.position.x) < 45;
       if (w.group.visible) w.update(t, dt * (reduceMotion ? 0.25 : 1), info);
+    }
+
+    // HTML windows follow their anchor in the scene and fade with the chapter.
+    camera.updateMatrixWorld();
+    for (const o of overlays) {
+      const k = 1 - smooth(0.22, 0.42, Math.abs(f - idx[o.station]));
+      if (k <= 0.002) {
+        if (o.shown) { o.shown = false; o.el.style.visibility = 'hidden'; }
+        continue;
+      }
+      o.anchor.getWorldPosition(world);
+      tmp.setFromMatrixColumn(camera.matrixWorld, 0).multiplyScalar(o.width / 2).add(world);
+      world.project(camera);
+      tmp.project(camera);
+      // Phones centre the window; wide screens keep it where the scene puts it.
+      const x = mobileQuery.matches ? W / 2 : (world.x * 0.5 + 0.5) * W, y = (-world.y * 0.5 + 0.5) * H;
+      // On-screen width in CSS pixels, kept inside the screen edges.
+      const px = Math.min(Math.abs(tmp.x - world.x) * W, 2 * (Math.min(x, W - x) - 12));
+      o.el.style.transform = `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px) translate(-50%, -50%) scale(${(px / o.baseWidth).toFixed(4)})`;
+      o.el.style.opacity = k.toFixed(3);
+      if (!o.shown) { o.shown = true; o.el.style.visibility = 'visible'; }
     }
 
     // Globe labels.
