@@ -103,8 +103,8 @@ const STATIONS = {
   kaukira: station(v(-1, 2.5, 0), 74, 8, 22, 'sunset'),
   university: station(v(X.university, 5, -5), 72, 5, -18, 'day'),
   teacher: station(v(X.classroom - 3, 3.8, -4), 45, 4, 9, 'golden'),
-  remote: { pos: G.clone().add(latLon(22, -80, 82)), look: G, palette: 'space' },
-  move: { pos: G.clone().add(latLon(40, -40, 86)), look: G, palette: 'space' },
+  remote: { pos: G.clone().add(latLon(24, -82, 72)), look: G, palette: 'space' },
+  move: { pos: G.clone().add(latLon(42, -38, 76)), look: G, palette: 'space' },
   sweden: station(v(X.sweden, 5.5, -2), 82, 5, 16, 'nordic'),
   titan: station(v(X.titan, 5.4, 0), 50, 3, -4, 'titan'),
   now: station(v(X.now, 4, 0), 48, 3, 0, 'dusk'),
@@ -165,10 +165,9 @@ function start(renderer) {
   scene.add(sky);
 
   const starGeo = new THREE.BufferGeometry();
-  const starPos = new Float32Array(2000 * 3);
-  for (let i = 0; i < 2000; i++) {
+  const starPos = new Float32Array(3200 * 3);
+  for (let i = 0; i < 3200; i++) {
     const s = new THREE.Vector3().randomDirection();
-    s.y = Math.abs(s.y) * 0.9 + 0.05;
     s.normalize().multiplyScalar(550);
     starPos.set([s.x, s.y, s.z], i * 3);
   }
@@ -206,37 +205,56 @@ function start(renderer) {
     envRT = next;
   }
 
-  const worlds = [
-    [buildKaukira(), X.kaukira],
-    [buildUniversity(), X.university],
-    [buildClassroom(), X.classroom],
-    [buildGlobe(), X.globe],
-    [buildSweden(), X.sweden],
-    [buildTitan(), X.titan],
-    [buildNow(), X.now],
-  ].map(([w, x]) => {
-    w.group.position.x = x;
-    scene.add(w.group);
-    return w;
-  });
-  const globe = worlds[3];
-
+  // Scenes are built one at a time: the one on screen first, so the page
+  // shows something quickly, then the rest in the background, nearest first.
+  // `from` and `to` are the chapters each scene belongs to.
+  const pending = [
+    { build: buildKaukira, x: X.kaukira, from: 0, to: idx.kaukira },
+    { build: buildUniversity, x: X.university, from: idx.university, to: idx.university },
+    { build: buildClassroom, x: X.classroom, from: idx.teacher, to: idx.teacher },
+    { build: buildGlobe, x: X.globe, from: idx.remote, to: idx.move },
+    { build: buildSweden, x: X.sweden, from: idx.sweden, to: idx.sweden },
+    { build: buildTitan, x: X.titan, from: idx.titan, to: idx.titan },
+    { build: buildNow, x: X.now, from: idx.now, to: idx.now },
+  ];
+  const worlds = [];
   // Some scenes show an HTML window (editor, terminal) that the camera places
   // over the canvas, so its text is drawn by the browser and stays sharp.
-  const overlays = worlds.filter((w) => w.overlay).map((w) => ({ ...w.overlay, baseWidth: 1, shown: false }));
+  const overlays = [];
   const measureOverlays = () => { for (const o of overlays) o.baseWidth = o.el.offsetWidth || 1; };
-
   // Globe labels as HTML over the scene.
   const labelsEl = document.getElementById('labels');
-  const labels = Object.entries(globe.pins).map(([key, p]) => {
-    const el = document.createElement('div');
-    el.className = 'pin-label';
-    el.style.setProperty('--c', p.color);
-    el.textContent = p.label;
-    labelsEl.appendChild(el);
-    return { key, p, el };
-  });
-  const labelWindow = { kaukira: ['remote', 'move'], usa: ['remote', 'remote'], goteborg: ['move', 'move'] };
+  const labels = [];
+  const labelWindow = { sanPedroSula: ['remote', 'move'], usa: ['remote', 'remote'], goteborg: ['move', 'move'] };
+
+  function buildNearest(position) {
+    if (!pending.length) return false;
+    const gap = (p) => Math.max(p.from - position, position - p.to, 0);
+    pending.sort((p, q) => gap(p) - gap(q));
+    const next = pending.shift();
+    const t0 = performance.now();
+    const w = next.build();
+    w.group.position.x = next.x;
+    w.group.visible = false;
+    // A scene shows for its own chapters and half a transition either side;
+    // the swap to the next scene happens where the haze is thickest.
+    w.range = [next.from - 0.5, next.to + 0.5];
+    scene.add(w.group);
+    worlds.push(w);
+    if (w.overlay) overlays.push({ ...w.overlay, baseWidth: w.overlay.el.offsetWidth || 1, shown: false });
+    for (const [key, p] of Object.entries(w.pins || {})) {
+      const el = document.createElement('div');
+      el.className = 'pin-label';
+      el.style.setProperty('--c', p.color);
+      el.textContent = p.label;
+      labelsEl.appendChild(el);
+      labels.push({ key, p, el });
+    }
+    sun.shadow.needsUpdate = true;
+    if (import.meta.env.DEV) console.log(`built ${next.build.name} in ${Math.round(performance.now() - t0)} ms`);
+    return true;
+  }
+  buildNearest(scrollF());
 
   // Soft contact shadows where things meet (ambient occlusion), then the
   // tone mapping and colour conversion.
@@ -361,7 +379,7 @@ function start(renderer) {
 
     const info = { f, idx, palette, pixelH: H * dpr };
     for (const w of worlds) {
-      w.group.visible = Math.abs(camera.position.x - w.group.position.x) < 45;
+      w.group.visible = f >= w.range[0] && f < w.range[1];
       if (w.group.visible) w.update(t, dt * (reduceMotion ? 0.25 : 1), info);
     }
 
@@ -407,11 +425,20 @@ function start(renderer) {
     ao.enabled = aoAllowed && (f < idx.remote - 0.5 || (f > idx.move + 0.5 && f < idx.titan - 0.5));
     plain.enabled = !ao.enabled;
     composer.render(dt);
+
+    if (!started) {
+      // The first picture is up: reveal it, then build the other scenes.
+      started = true;
+      document.documentElement.classList.add('ready');
+      performance.mark('scene-ready');
+      const more = () => { if (buildNearest(f)) setTimeout(more, 90); };
+      setTimeout(more, 250);
+    }
   }
+  let started = false;
   if (import.meta.env.DEV) window.__dbg = { ao, plain, sun, renderer, composer, scene, setDpr: (d) => { dpr = d; renderer.setPixelRatio(d); renderer.setSize(W, H, false); composer.setPixelRatio(d); composer.setSize(W, H); } };
   sun.shadow.needsUpdate = true;
   requestAnimationFrame(frame);
-  document.documentElement.classList.add('ready');
 }
 
 // ── Page chrome ─────────────────────────────────────────────────────────────

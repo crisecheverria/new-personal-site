@@ -331,12 +331,12 @@ export function tex(kind, rx = 1, ry = rx) {
 
 // A tileable normal map of crossing waves, for water: many sine waves with
 // whole-number frequencies, so the texture repeats without seams.
-export function waveNormals(size = 512, seed = 41) {
+export function waveNormals(size = 256, seed = 41) {
   const r = rng(seed);
   const waves = [];
-  for (let i = 0; i < 48; i++) {
+  for (let i = 0; i < 40; i++) {
     const a = r() * Math.PI * 2;
-    const k = 2 + Math.floor(r() * r() * 46);
+    const k = 2 + Math.floor(r() * r() * 40);
     waves.push({ kx: Math.round(Math.cos(a) * k), ky: Math.round(Math.sin(a) * k), amp: 1 / (k * (0.6 + r())), ph: r() * Math.PI * 2 });
   }
   return paint(size, (ctx) => {

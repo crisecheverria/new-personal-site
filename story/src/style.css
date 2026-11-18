@@ -32,6 +32,9 @@ a { color: inherit; }
 
 /* ── The scene behind everything ────────────────────────────────────────── */
 
+/* The scene fades in once its first picture is drawn. */
+#scene { opacity: 0; transition: opacity 900ms ease; }
+.ready #scene { opacity: 1; }
 #scene {
   position: fixed;
   inset: 0;
@@ -298,12 +301,11 @@ a { color: inherit; }
 
 .hero .inner { width: min(980px, 70vw); }
 .hero h1 {
-  margin: 0 0 26px;
+  margin: 0 0 44px;
   font: 400 clamp(76px, 11vw, 188px) / 0.84 var(--serif);
   letter-spacing: -0.025em;
 }
-.hero h1 .line { display: block; }
-.hero h1 .line + .line { font-style: italic; padding-left: 0.5em; }
+.hero h1 em { font-style: italic; }
 .chapter .lede {
   max-width: 17em;
   margin: 0 0 36px;
@@ -491,7 +493,6 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outlin
   .chapter[data-num]::before { display: none; }
   .inner, .hero .inner { width: 100%; }
   .hero h1 { font-size: clamp(64px, 19vw, 120px); }
-  .hero h1 .line + .line { padding-left: 0.3em; }
   h2 { font-size: clamp(44px, 12vw, 64px); }
   .scroll-cue { display: none; }
   .projects li { grid-template-columns: 100px 1fr; }
