@@ -5,7 +5,6 @@ import { buildUniversity } from './scenes/university.js';
 import { buildClassroom } from './scenes/classroom.js';
 import { buildGlobe, latLon } from './scenes/globe.js';
 import { buildSweden } from './scenes/sweden.js';
-import { buildTitan } from './scenes/titan.js';
 import { buildNow } from './scenes/now.js';
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
@@ -72,7 +71,6 @@ const PALETTES = {
   golden: P({ skyTop: '#7489bf', skyBottom: '#f2d3ab', fogNear: 110, fogFar: 320, sun: '#ffcf96', sunI: 3.6, sunDir: [-0.85, 0.3, 0.42], glow: 0.7, env: 0.75, hemiSky: '#fff0dc', hemiGround: '#6a5a48', hemiI: 0.3, stars: 0, aurora: 0 }),
   space: P({ skyTop: '#070b16', skyBottom: '#121c33', fogNear: 120, fogFar: 280, sun: '#bcd4ff', sunI: 1.1, sunDir: [0.5, 0.5, 0.7], glow: 0, env: 0.3, hemiSky: '#8fa8ff', hemiGround: '#101828', hemiI: 0.6, stars: 0.8, aurora: 0 }),
   nordic: P({ skyTop: '#07101f', skyBottom: '#1e3a56', fogNear: 110, fogFar: 300, sun: '#a6bde9', sunI: 1.1, sunDir: [0.35, 0.55, -0.75], glow: 0.18, env: 0.7, hemiSky: '#a9c2ff', hemiGround: '#1d2735', hemiI: 0.45, stars: 0.75, aurora: 1 }),
-  titan: P({ skyTop: '#0b0f1c', skyBottom: '#20264a', fogNear: 110, fogFar: 270, sun: '#c8d0ff', sunI: 1.1, sunDir: [0.3, 0.6, 0.7], glow: 0, env: 0.5, hemiSky: '#a9b8ff', hemiGround: '#141a30', hemiI: 0.9, stars: 0.6, aurora: 0 }),
   dusk: P({ skyTop: '#100e1c', skyBottom: '#2c2446', fogNear: 110, fogFar: 270, sun: '#d6c8ff', sunI: 1.3, sunDir: [0.3, 0.6, 0.7], glow: 0, env: 0.5, hemiSky: '#b9a8ff', hemiGround: '#1a1530', hemiI: 0.9, stars: 0.5, aurora: 0 }),
 };
 const NUM_KEYS = ['fogNear', 'fogFar', 'sunI', 'hemiI', 'stars', 'aurora', 'glow', 'env'];
@@ -88,7 +86,7 @@ function mixPalette(out, a, b, t) {
 // A long lens (small field of view) keeps the scenes calm and flat.
 
 const FOV = 26;
-const X = { kaukira: 0, university: 90, classroom: 180, globe: 270, sweden: 360, titan: 450, now: 540 };
+const X = { kaukira: 0, university: 90, classroom: 180, globe: 270, sweden: 360, now: 450 };
 const G = new THREE.Vector3(X.globe, 0, 0);
 const v = (x, y, z) => new THREE.Vector3(x, y, z);
 const DEG = Math.PI / 180;
@@ -106,7 +104,6 @@ const STATIONS = {
   remote: { pos: G.clone().add(latLon(24, -82, 72)), look: G, palette: 'space' },
   move: { pos: G.clone().add(latLon(42, -38, 76)), look: G, palette: 'space' },
   sweden: station(v(X.sweden, 5.5, -2), 82, 5, 16, 'nordic'),
-  titan: station(v(X.titan, 5.4, 0), 50, 3, -4, 'titan'),
   now: station(v(X.now, 4, 0), 48, 3, 0, 'dusk'),
 };
 const keys = chapters.map((s) => STATIONS[s.dataset.station]);
@@ -214,7 +211,6 @@ function start(renderer) {
     { build: buildClassroom, x: X.classroom, from: idx.teacher, to: idx.teacher },
     { build: buildGlobe, x: X.globe, from: idx.remote, to: idx.move },
     { build: buildSweden, x: X.sweden, from: idx.sweden, to: idx.sweden },
-    { build: buildTitan, x: X.titan, from: idx.titan, to: idx.titan },
     { build: buildNow, x: X.now, from: idx.now, to: idx.now },
   ];
   const worlds = [];
@@ -422,7 +418,7 @@ function start(renderer) {
 
     // Contact shadows matter on the ground scenes, not on the globe or screens.
     // N8AO renders the scene itself; the plain pass is only for when it's off.
-    ao.enabled = aoAllowed && (f < idx.remote - 0.5 || (f > idx.move + 0.5 && f < idx.titan - 0.5));
+    ao.enabled = aoAllowed && (f < idx.remote - 0.5 || (f > idx.move + 0.5 && f < idx.now - 0.5));
     plain.enabled = !ao.enabled;
     composer.render(dt);
 

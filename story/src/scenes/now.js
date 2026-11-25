@@ -7,7 +7,7 @@ const SESSION = [
   { p: '$ ', text: 'cat origin.txt' },
   { p: '', text: 'Kaukira, La Mosquitia, Honduras' },
   { p: '$ ', text: 'ls ~/projects' },
-  { p: '', text: 'titan/  notas/  svenska/  codequest/' },
+  { p: '', text: 'notas/  svenska/  codequest/' },
   { p: '$ ', text: 'echo "always learning, always building"' },
   { p: '', text: 'always learning, always building' },
   { p: '$ ', text: '' },
